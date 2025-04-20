@@ -3,36 +3,34 @@ package com.planity.homeservices.service;
 import com.planity.homeservices.model.User;
 import com.planity.homeservices.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
-    /**
-     * Authentifie un utilisateur via email et mot de passe
-     */
     public User authenticate(String email, String password) {
         User user = userRepository.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && encoder.matches(password, user.getPassword())) {
             return user;
         }
         return null;
     }
 
-    /**
-     * Enregistre un nouvel utilisateur si l'email n'est pas déjà pris
-     */
     public boolean register(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            return false; // email déjà utilisé
+            return false;
         }
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }

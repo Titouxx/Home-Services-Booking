@@ -12,27 +12,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/login")
-    public String showLoginForm() {
-        return "login"; // login.html dans templates
+    public String showLoginForm(Model model) {
+        model.addAttribute("user", new User());
+        return "login";
     }
 
     @PostMapping("/login")
     public String processLogin(
-            @RequestParam String username,
+            @RequestParam String email,
             @RequestParam String password,
             Model model,
             HttpSession session
     ) {
-        User user = userService.authenticate(username, password);
+        User user = userService.authenticate(email, password);
         if (user != null) {
             session.setAttribute("loggedUser", user);
-            return "redirect:/"; // ou page d’accueil
+            return "redirect:/"; // ou vers un dashboard selon le rôle
         } else {
-            model.addAttribute("errorMessage", "Nom d'utilisateur ou mot de passe invalide");
+            model.addAttribute("errorMessage", "Email ou mot de passe incorrect.");
             return "login";
         }
     }
