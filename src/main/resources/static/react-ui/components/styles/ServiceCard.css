@@ -1,0 +1,38 @@
+/* Fichier : src/main/resources/static/react-ui/styles/serviceCard.css */
+
+.service-card {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 12px;
+    background-color: #f9fce8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.service-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.service-icon img {
+    width: 40px;
+    height: 40px;
+}
+
+.service-info p {
+    margin: 0;
+    color: green;
+    font-size: 0.9rem;
+}
+
+.service-btn {
+    padding: 0.5rem 1rem;
+    background-color: #4c6920;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
