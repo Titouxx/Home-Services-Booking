@@ -1,7 +1,6 @@
 package com.planity.homeservices.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,9 +19,6 @@ public class User {
     private String password;
 
     private String role; // CLIENT, PROVIDER, ADMIN
-
-    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL)
-    private List<Service> offeredServices;
 
     // --- Constructeurs ---
     public User() {}
@@ -73,13 +69,5 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public List<Service> getOfferedServices() {
-        return offeredServices;
-    }
-
-    public void setOfferedServices(List<Service> offeredServices) {
-        this.offeredServices = offeredServices;
     }
 }
