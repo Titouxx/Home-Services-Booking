@@ -3,41 +3,37 @@ import ServiceCard from "./ServiceCard";
 
 const ServiceList = () => {
     const [services, setServices] = useState([]);
-    const [error, setError] = useState(null); // pour afficher un message si nécessaire
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetch("/api/services", {
             method: "GET",
-            credentials: "include", // 🔐 nécessaire pour envoyer le cookie JSESSIONID
+            credentials: "include", // 🔐 important pour la session
         })
-            .then((res) => {
-                if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-                return res.text(); // 🔄 lit la réponse brute
+            .then(async (res) => {
+                if (!res.ok) {
+                    const text = await res.text(); // lis même si pas JSON
+                    throw new Error(`Erreur ${res.status}: ${text}`);
+                }
+                return res.json();
             })
-            .then((text) => {
-                console.log("🧾 Réponse brute du backend:", text);
-                if (!text) throw new Error("Réponse vide du backend");
-                return JSON.parse(text); // 🔍 essaie de parser le JSON
-            })
-            .then((data) => {
-                setServices(data);
-            })
+            .then((data) => setServices(data))
             .catch((err) => {
-                console.error("❌ Error fetching services:", err);
-                setError(err.message);
+                console.error("Error fetching services:", err);
+                setError("❌ Impossible de récupérer les services. Es-tu bien connecté ?");
             });
     }, []);
 
     return (
         <div className="service-list">
-            {error && <p style={{ color: "red" }}>Erreur : {error}</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
             {services.length > 0 ? (
                 services.map((service) => (
                     <ServiceCard key={service.id} service={service} />
                 ))
-            ) : (
-                !error && <p>Aucun service disponible.</p>
-            )}
+            ) : !error ? (
+                <p>Aucun service disponible.</p>
+            ) : null}
         </div>
     );
 };
