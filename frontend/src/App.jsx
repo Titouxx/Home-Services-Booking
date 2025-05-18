@@ -10,10 +10,10 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/services/:id" element={<ProtectedRoute><ServiceDetailsPage /></ProtectedRoute>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+                <Route path="/services/:id" element={<ProtectedRoute><ServiceDetailsPage /></ProtectedRoute>} />
             </Routes>
         </BrowserRouter>
     );

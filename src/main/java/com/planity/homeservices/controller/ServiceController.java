@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "http://localhost:5173") // Use exact origin for dev; use "*" only temporarily
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // Use exact origin for dev; use "*" only temporarily
 public class ServiceController {
 
     private final ServiceRepository repository;

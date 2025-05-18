@@ -2,7 +2,6 @@ package com.planity.homeservices.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,18 +18,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // désactivation CSRF pour tests frontend
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // accès public à /login et /register
-                        .anyRequest().authenticated() // reste des routes sécurisées
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/", "/index.html",
+                                "/assets/**", "/vite.svg",
+                                "/login", "/register"
+                        ).permitAll()
+                        .requestMatchers("/api/services/**").authenticated() // ✅ Important
+                        .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults()) // login form Spring si besoin
+                .formLogin(form -> form.disable())
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessUrl("/")) // redirection après logout
-                .sessionManagement(sess -> sess
-                        .maximumSessions(1) // 1 session max par utilisateur
+                        .logoutSuccessUrl("/")
                 );
+
         return http.build();
     }
 }
