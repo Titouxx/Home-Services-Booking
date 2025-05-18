@@ -17,4 +17,5 @@ public class Service {
     private String name;
     private double price;
     private int durationMinutes;
+    private String description;
 }
