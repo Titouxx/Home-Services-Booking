@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import MyCalendar from "./Calendar";
 
 export function HomePage() {
   const [services, setServices] = useState([]);
@@ -33,9 +34,14 @@ export function HomePage() {
       </header>
 
       <main style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
-        <section style={{ flex: 3 }}>
-          <h2>Our Services</h2>
-          {services.map((service) => (
+          <section style={serviceListStyle}>
+
+              <div style={sectionTitle}>
+                  <h2>Our Services</h2>
+                  <hr />
+              </div>
+
+              {services.map((service) => (
             <div key={service.id} style={serviceCard}>
               <div>
                 <h3>🔧 {service.name}</h3>
@@ -50,15 +56,10 @@ export function HomePage() {
           ))}
         </section>
 
-        <aside style={calendarCard}>
-          <h3>Calendar</h3>
-          <textarea rows="5" style={{ width: "100%" }}>
-            [Calendar Placeholder]
-          </textarea>
-          <button style={{ ...buttonStyle, marginTop: "10px", width: "100%" }}>
-            Book →
-          </button>
-        </aside>
+          <aside style={calendarCard}>
+              <MyCalendar />
+          </aside>
+
       </main>
 
       <footer
@@ -110,8 +111,31 @@ const buttonStyle = {
 };
 
 const calendarCard = {
-  background: "#f7fbea",
-  padding: "15px",
-  borderRadius: "10px",
-  width: "300px",
+    marginRight: "30px",
+    marginTop: "48px",
+    padding: "15px",
+    borderRadius: "10px",
+    width: "300px",
+
+};
+const serviceListStyle = {
+    flex: 3,
+    maxHeight: "75vh",
+    overflowY: "auto",
+    paddingRight: "10px",
+};
+const sectionTitle = {
+    marginBottom: "20px",
+};
+
+sectionTitle.h2 = {
+    fontSize: "2rem",
+    fontWeight: "500",
+    marginBottom: "5px",
+    fontFamily: "Georgia, serif",
+};
+
+sectionTitle.hr = {
+    border: "none",
+    borderTop: "1px solid #e0e0e0",
 };
