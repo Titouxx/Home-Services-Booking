@@ -23,5 +23,11 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String status; // Peut-être "client" ou "prestataire"
+    private String status;
+
+    public User(String username, String password, String status) {
+        this.username = username;
+        this.password = password;
+        this.status = status;
+    }
 }
