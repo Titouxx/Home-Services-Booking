@@ -1,7 +1,21 @@
 {
+  "name": "home-services-booking",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
   "dependencies": {
     "date-fns": "^4.1.0",
     "react-calendar": "^5.1.0",
-    "react-datepicker": "^8.3.0"
+    "react-datepicker": "^8.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.0.0"
   }
 }

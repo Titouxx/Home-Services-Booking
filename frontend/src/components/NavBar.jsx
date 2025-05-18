@@ -14,9 +14,9 @@ const NavBar = () => {
                 <li><a href="/templates/login.html">Who we are</a></li>
                 <li><a href="/templates/login.html">My profile</a></li>
                 <li>
-                    <Link to="/basket">
-                    <button className="basket">Basket (3)</button>
-                    </Link>
+                <Link to="/basket">
+                <button className="basket" onClick={() => window.location.href = "/#/basket"}>Basket</button>
+                </Link>
                 </li>
             </ul>
         </nav>

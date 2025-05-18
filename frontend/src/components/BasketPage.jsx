@@ -5,30 +5,33 @@ const BasketPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/basket")
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur lors de la récupération du panier.");
-        return res.json();
-      })
-      .then((data) => {
-        setBasketItems(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Erreur :", error);
-        setLoading(false);
-      });
+
+    console.log("✅ BasketPage chargé !");
+
+    const mockData = [
+      {
+        id: 1,
+        service_name: "Plomberie",
+        booking_date: "2025-05-21",
+        booking_time: "10:30",
+      },
+      {
+        id: 2,
+        service_name: "Ménage",
+        booking_date: "2025-05-22",
+        booking_time: "14:00",
+      },
+    ];
+
+    // Simule un délai de chargement
+    setTimeout(() => {
+      setBasketItems(mockData);
+      setLoading(false);
+    }, 500); // 500 ms
   }, []);
 
   const handleDelete = (id) => {
-    fetch(`/api/basket/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Échec de la suppression.");
-        setBasketItems((prev) => prev.filter((item) => item.id !== id));
-      })
-      .catch((err) => console.error("Suppression échouée :", err));
+    setBasketItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   if (loading) return <p>Chargement du panier...</p>;
