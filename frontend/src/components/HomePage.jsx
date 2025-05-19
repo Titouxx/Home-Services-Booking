@@ -1,10 +1,18 @@
+// src/components/HomePage.jsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MyCalendar from "./Calendar";
 
 export function HomePage() {
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState(null);
+    const [basketItems, setBasketItems] = useState(() => {
+        // Chargement initial du panier depuis localStorage
+        const saved = localStorage.getItem("basketItems");
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("/api/services")
@@ -13,9 +21,31 @@ export function HomePage() {
             .catch((err) => console.error("Failed to fetch services:", err));
     }, []);
 
+    useEffect(() => {
+        // Sauvegarde basket dans localStorage à chaque modification
+        localStorage.setItem("basketItems", JSON.stringify(basketItems));
+    }, [basketItems]);
+
     const handleCardClick = (e, service) => {
         if (e.target.closest(".details-button")) return;
         setSelectedService(service);
+    };
+
+    // Fonction pour ajouter un service au panier (exemple simple)
+    const addToBasket = (service) => {
+        // Exemple d'ajout simple avec id unique timestamp
+        const newItem = {
+            id: Date.now(),
+            service,
+            date: null,
+            time: null,
+        };
+        setBasketItems([...basketItems, newItem]);
+    };
+
+    // Calcul du total
+    const calculateTotal = () => {
+        return basketItems.reduce((total, item) => total + item.service.price, 0);
     };
 
     return (
@@ -23,9 +53,14 @@ export function HomePage() {
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h1 style={{ color: "#4B6000" }}>PLANITY</h1>
                 <nav>
-                    <a href="/templates/login.html" style={linkStyle}>Who we are</a>
-                    <a href="/templates/login.html" style={linkStyle}>My profile</a>
-                    <button style={basketStyle}>Basket (3)</button>
+                    <Link to="/about" style={linkStyle}>Who we are</Link>
+                    <Link to="/profile" style={linkStyle}>My profile</Link>
+                    <button
+                        onClick={() => navigate("/basket")}
+                        style={basketStyle}
+                    >
+                        Basket ({basketItems.length})
+                    </button>
                 </nav>
             </header>
 
@@ -36,12 +71,6 @@ export function HomePage() {
                         <hr style={sectionTitleHr} />
                     </div>
 
-                    {services.length === 0 && (
-                        <p style={{ color: "#888", textAlign: "center" }}>
-                            No services available at the moment.
-                        </p>
-                    )}
-
                     {services.map((service) => (
                         <div
                             key={service.id}
@@ -49,7 +78,7 @@ export function HomePage() {
                             style={{
                                 ...serviceCard,
                                 border: selectedService?.id === service.id ? "2px solid #4B6000" : "none",
-                                cursor: "pointer",
+                                cursor: "pointer"
                             }}
                         >
                             <div>
@@ -58,14 +87,16 @@ export function HomePage() {
                                     {service.price}€ / {service.durationMinutes}min
                                 </p>
                             </div>
-                            <Link
-                                to={`/services/${service.id}`}
+                            <button
                                 className="details-button"
                                 style={buttonStyle}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    addToBasket(service);
+                                }}
                             >
-                                Details
-                            </Link>
+                                Add to Basket
+                            </button>
                         </div>
                     ))}
                 </section>
@@ -82,8 +113,7 @@ export function HomePage() {
     );
 }
 
-// === Styles ===
-
+// Styles
 const linkStyle = {
     marginRight: "15px",
     textDecoration: "none",
@@ -97,6 +127,7 @@ const basketStyle = {
     border: "none",
     padding: "6px 12px",
     borderRadius: "5px",
+    cursor: "pointer",
 };
 
 const serviceCard = {
@@ -125,7 +156,6 @@ const calendarCard = {
     padding: "15px",
     borderRadius: "10px",
     width: "300px",
-    backgroundColor: "#f7fbea",
 };
 
 const serviceListStyle = {
