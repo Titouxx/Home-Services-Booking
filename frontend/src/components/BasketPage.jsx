@@ -1,68 +1,68 @@
 // src/components/BasketPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 export function BasketPage() {
-    const [basketItems, setBasketItems] = useState(() => {
-        const saved = localStorage.getItem("basketItems");
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [reservations, setReservations] = useState([]);
 
     useEffect(() => {
-        localStorage.setItem("basketItems", JSON.stringify(basketItems));
-    }, [basketItems]);
+        fetch("/api/reservations")
+            .then((res) => res.json())
+            .then((data) => setReservations(data))
+            .catch((err) => console.error("Failed to fetch reservations:", err));
+    }, []);
 
     const handleRemoveItem = (id) => {
-        setBasketItems(basketItems.filter(item => item.id !== id));
+        setReservations(reservations.filter(item => item.id !== id));
     };
 
     const calculateTotal = () => {
-        return basketItems.reduce((total, item) => total + item.service.price, 0);
+        return reservations.reduce((total, item) => total + (item.service?.price || 0), 0);
     };
 
     return (
         <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h1 style={{ color: "#4B6000" }}>PLANITY</h1>
+                <Link to="/" style={logoStyle}>PLANITY</Link>
                 <nav>
                     <Link to="/about" style={linkStyle}>Who we are</Link>
                     <Link to="/profile" style={linkStyle}>My profile</Link>
-                    <Link to="/basket" style={{ ...basketStyle, textDecoration: 'none' }}>
-                        Basket ({basketItems.length})
-                    </Link>
+                    <button onClick={() => navigate("/basket")} style={basketStyle}>
+                        Basket ({reservations.length})
+                    </button>
                 </nav>
             </header>
+
 
             <main style={{ marginTop: "30px" }}>
                 <section style={{ maxWidth: "800px", margin: "0 auto" }}>
                     <div style={sectionTitle}>
-                        <h2 style={sectionTitleH2}>Your Basket</h2>
+                        <h2 style={sectionTitleH2}>Your Bookings</h2>
                         <hr style={sectionTitleHr} />
                     </div>
 
-                    {basketItems.length === 0 ? (
+                    {reservations.length === 0 ? (
                         <div style={{ textAlign: "center", padding: "40px" }}>
-                            <p style={{ fontSize: "18px", marginBottom: "20px" }}>Your basket is empty</p>
+                            <p style={{ fontSize: "18px", marginBottom: "20px" }}>No reservations found</p>
                             <Link to="/" style={buttonStyle}>Browse Services</Link>
                         </div>
                     ) : (
                         <>
-                            {basketItems.map((item) => (
+                            {reservations.map((item) => (
                                 <div key={item.id} style={basketItemStyle}>
                                     <div>
-                                        <h3>🔧 {item.service.name}</h3>
+                                        <h3>🔧 {item.service?.name ?? "Service"}</h3>
                                         <p style={{ color: "#4B6000" }}>
-                                            {item.service.price}€ / {item.service.durationMinutes}min
+                                            {item.service?.price}€ / {item.service?.durationMinutes}min
                                         </p>
                                         <p>
-                                            <strong>Date:</strong> {item.date ?? "Not set"} <br />
-                                            <strong>Time:</strong> {item.time ?? "Not set"}
+                                            <strong>Date:</strong> {new Date(item.appointmentDate).toLocaleDateString()}<br />
+                                            <strong>Time:</strong> {new Date(item.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                     </div>
-                                    <button
-                                        onClick={() => handleRemoveItem(item.id)}
-                                        style={removeButtonStyle}
-                                    >
+                                    <button onClick={() => handleRemoveItem(item.id)} style={removeButtonStyle}>
                                         Remove
                                     </button>
                                 </div>
@@ -71,11 +71,9 @@ export function BasketPage() {
                             <div style={summaryStyle}>
                                 <div>
                                     <h3>Total: {calculateTotal()}€</h3>
-                                    <p>{basketItems.length} service{basketItems.length !== 1 ? 's' : ''}</p>
+                                    <p>{reservations.length} service{reservations.length !== 1 ? 's' : ''}</p>
                                 </div>
-                                <button style={checkoutButtonStyle}>
-                                    Proceed to Checkout
-                                </button>
+                                <button style={checkoutButtonStyle}>Proceed to Checkout</button>
                             </div>
                         </>
                     )}
@@ -89,8 +87,7 @@ export function BasketPage() {
     );
 }
 
-// Styles (identiques à ceux que tu as fournis)
-
+// Styles
 const linkStyle = {
     marginRight: "15px",
     textDecoration: "none",
@@ -114,7 +111,6 @@ const buttonStyle = {
     borderRadius: "25px",
     cursor: "pointer",
     textDecoration: "none",
-    display: "inline-block",
 };
 
 const sectionTitle = {
@@ -171,4 +167,11 @@ const checkoutButtonStyle = {
     padding: "10px 25px",
     borderRadius: "20px",
     cursor: "pointer",
+};
+const logoStyle = {
+    color: "#4B6000",
+    textDecoration: "none",
+    fontSize: "2rem",
+    fontWeight: "bold",
+    fontFamily: "Georgia, serif",
 };

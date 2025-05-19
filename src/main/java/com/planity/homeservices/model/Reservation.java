@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 public class Reservation {
-    // Getters and setters
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDateTime appointmentDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Service service;
 
     public void setId(Long id) { this.id = id; }

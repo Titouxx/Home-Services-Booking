@@ -1,4 +1,3 @@
-// src/components/HomePage.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MyCalendar from "./Calendar";
@@ -7,7 +6,6 @@ export function HomePage() {
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState(null);
     const [basketItems, setBasketItems] = useState(() => {
-        // Chargement initial du panier depuis localStorage
         const saved = localStorage.getItem("basketItems");
         return saved ? JSON.parse(saved) : [];
     });
@@ -22,18 +20,16 @@ export function HomePage() {
     }, []);
 
     useEffect(() => {
-        // Sauvegarde basket dans localStorage à chaque modification
         localStorage.setItem("basketItems", JSON.stringify(basketItems));
     }, [basketItems]);
 
     const handleCardClick = (e, service) => {
-        if (e.target.closest(".details-button")) return;
+        // Ignorer si on clique sur un bouton
+        if (e.target.closest("button")) return;
         setSelectedService(service);
     };
 
-    // Fonction pour ajouter un service au panier (exemple simple)
     const addToBasket = (service) => {
-        // Exemple d'ajout simple avec id unique timestamp
         const newItem = {
             id: Date.now(),
             service,
@@ -43,22 +39,15 @@ export function HomePage() {
         setBasketItems([...basketItems, newItem]);
     };
 
-    // Calcul du total
-    const calculateTotal = () => {
-        return basketItems.reduce((total, item) => total + item.service.price, 0);
-    };
-
     return (
         <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h1 style={{ color: "#4B6000" }}>PLANITY</h1>
+                <Link to="/" style={logoStyle}>PLANITY</Link>
+
                 <nav>
                     <Link to="/about" style={linkStyle}>Who we are</Link>
                     <Link to="/profile" style={linkStyle}>My profile</Link>
-                    <button
-                        onClick={() => navigate("/basket")}
-                        style={basketStyle}
-                    >
+                    <button onClick={() => navigate("/basket")} style={basketStyle}>
                         Basket ({basketItems.length})
                     </button>
                 </nav>
@@ -78,7 +67,7 @@ export function HomePage() {
                             style={{
                                 ...serviceCard,
                                 border: selectedService?.id === service.id ? "2px solid #4B6000" : "none",
-                                cursor: "pointer"
+                                cursor: "pointer",
                             }}
                         >
                             <div>
@@ -87,17 +76,19 @@ export function HomePage() {
                                     {service.price}€ / {service.durationMinutes}min
                                 </p>
                             </div>
-                            <button
-                                className="details-button"
-                                style={buttonStyle}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    addToBasket(service);
-                                }}
-                            >
-                                Add to Basket
-                            </button>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                <Link
+                                    to={`/services/${service.id}`}
+                                    className="details-button"
+                                    style={buttonStyle}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    Details
+                                </Link>
+
+                            </div>
                         </div>
+
                     ))}
                 </section>
 
@@ -113,7 +104,7 @@ export function HomePage() {
     );
 }
 
-// Styles
+// === Styles ===
 const linkStyle = {
     marginRight: "15px",
     textDecoration: "none",
@@ -145,9 +136,10 @@ const buttonStyle = {
     background: "#4B6000",
     color: "white",
     border: "none",
-    padding: "8px 16px",
+    padding: "8px 12px",
     borderRadius: "20px",
     cursor: "pointer",
+    fontSize: "0.9rem",
 };
 
 const calendarCard = {
@@ -156,6 +148,7 @@ const calendarCard = {
     padding: "15px",
     borderRadius: "10px",
     width: "300px",
+
 };
 
 const serviceListStyle = {
@@ -179,4 +172,12 @@ const sectionTitleH2 = {
 const sectionTitleHr = {
     border: "none",
     borderTop: "1px solid #e0e0e0",
+};
+
+const logoStyle = {
+    color: "#4B6000",
+    textDecoration: "none",
+    fontSize: "2rem",
+    fontWeight: "bold",
+    fontFamily: "Georgia, serif",
 };
