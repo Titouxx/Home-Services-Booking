@@ -3,18 +3,18 @@ import { useParams, Link } from "react-router-dom";
 
 const ServiceDetailsPage = () => {
   const { id } = useParams();
-  const [service, setService] = useState(null);
+  const [subServices, setSubServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`/api/services/${id}`)
+    fetch(`/api/subservices?serviceId=${id}`)
       .then((res) => {
-        if (!res.ok) throw new Error("Service non trouvé");
+        if (!res.ok) throw new Error("Sous-services non trouvés");
         return res.json();
       })
       .then((data) => {
-        setService(data);
+        setSubServices(data.slice(0, 3));
         setLoading(false);
       })
       .catch((err) => {
@@ -24,7 +24,7 @@ const ServiceDetailsPage = () => {
   }, [id]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error}</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif" }}>
@@ -61,60 +61,49 @@ const ServiceDetailsPage = () => {
 
       <div style={{ padding: "2rem" }}>
         <h2 style={{ color: "#4B6000", marginBottom: "1.5rem" }}>
-          Service Details
+          Sub-services
         </h2>
         <div
           style={{
-            border: "1px solid #ddd",
-            padding: "1.5rem",
-            borderRadius: "12px",
-            backgroundColor: "#f9fce8",
-            maxWidth: "600px",
-            margin: "0 auto",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            display: "flex",
+            justifyContent: "center",
+            gap: "2rem",
+            flexWrap: "wrap",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <h3 style={{ margin: 0, color: "#4B6000" }}>🔧 {service.name}</h3>
-          </div>
-
-          <div style={{ marginBottom: "1rem" }}>
-            <strong style={{ color: "#4B6000" }}>Price :</strong>
-            <span style={{ marginLeft: "0.5rem" }}>{service.price} € / h</span>
-          </div>
-
-          <div>
-            <strong
-              style={{
-                color: "#4B6000",
-                display: "block",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Description :
-            </strong>
+          {subServices.map((sub, idx) => (
             <div
+              key={idx}
               style={{
-                backgroundColor: "white",
-                padding: "1rem",
-                borderRadius: "8px",
-                borderLeft: "3px solid #4B6000",
-                lineHeight: "1.6",
+                border: "1px solid #ddd",
+                padding: "1.5rem",
+                borderRadius: "12px",
+                backgroundColor: "#f9fce8",
+                maxWidth: "400px",
+                maxHeight: "400px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
               }}
             >
-              {service.description ||
-                "Aucune description disponible pour ce service."}
+              <h3 style={{ color: "#4B6000" }}>🔧 {sub.name}</h3>
+              <p>
+                <strong style={{ color: "#4B6000" }}>Prix :</strong> {sub.price}{" "}
+                € / {sub.duration_minutes} minutes
+              </p>
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: "1rem",
+                  borderRadius: "8px",
+                  borderLeft: "3px solid #4B6000",
+                }}
+              >
+                {sub.description}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
+
       <footer
         style={{
           marginTop: "50px",
@@ -151,9 +140,8 @@ const basketStyle = {
   background: "#4B6000",
   color: "white",
   border: "none",
-  padding: "8px 16px",
+  padding: "6px 12px",
   borderRadius: "5px",
-  cursor: "pointer",
 };
 
 export default ServiceDetailsPage;
