@@ -71,6 +71,12 @@ export function HomePage() {
                         <hr style={sectionTitleHr} />
                     </div>
 
+                    {services.length === 0 && (
+                        <p style={{ color: "#888", textAlign: "center" }}>
+                            No services available at the moment.
+                        </p>
+                    )}
+
                     {services.map((service) => (
                         <div
                             key={service.id}
@@ -78,7 +84,7 @@ export function HomePage() {
                             style={{
                                 ...serviceCard,
                                 border: selectedService?.id === service.id ? "2px solid #4B6000" : "none",
-                                cursor: "pointer"
+                                cursor: "pointer",
                             }}
                         >
                             <div>
@@ -113,7 +119,8 @@ export function HomePage() {
     );
 }
 
-// Styles
+// === Styles ===
+
 const linkStyle = {
     marginRight: "15px",
     textDecoration: "none",
@@ -156,6 +163,7 @@ const calendarCard = {
     padding: "15px",
     borderRadius: "10px",
     width: "300px",
+    backgroundColor: "#f7fbea",
 };
 
 const serviceListStyle = {
