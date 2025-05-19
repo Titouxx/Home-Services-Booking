@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,18 +18,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // ✅ Constructeur pour tests manuels
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody Map<String, String> body) {
-        try {
-            String username = body.get("username");
-            String password = body.get("password");
-            String status = body.get("status");
+        String username = body.get("username");
+        String password = body.get("password");
+        String status = body.get("status");
 
+        try {
             User user = userService.registerUser(username, password, status);
             return ResponseEntity.ok().body("User registered: " + user.getUsername());
         } catch (IllegalArgumentException e) {
@@ -47,10 +41,7 @@ public class UserController {
         if (userOpt.isPresent()) {
             session.setAttribute("logged_in", true);
             session.setAttribute("user", userOpt.get());
-
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Login successful");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("message", "Login successful"));
         } else {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
@@ -64,9 +55,9 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
-        Boolean isLoggedIn = (Boolean) session.getAttribute("logged_in");
-        if (isLoggedIn != null && isLoggedIn) {
-            return ResponseEntity.ok(session.getAttribute("user"));
+        if (Boolean.TRUE.equals(session.getAttribute("logged_in"))) {
+            User user = (User) session.getAttribute("user");
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(401).body("Not logged in");
         }

@@ -3,8 +3,11 @@ package com.planity.homeservices;
 import com.planity.homeservices.controller.UserController;
 import com.planity.homeservices.model.User;
 import com.planity.homeservices.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import jakarta.servlet.http.HttpSession;
@@ -16,8 +19,16 @@ import static org.mockito.Mockito.*;
 
 public class UserControllerTest {
 
-    private final UserService userService = mock(UserService.class);
-    private final UserController userController = new UserController(userService);
+    @Mock
+    private UserService userService;
+
+    @InjectMocks
+    private UserController userController;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     public void testLoginSuccess() {
@@ -41,6 +52,7 @@ public class UserControllerTest {
 
         assertEquals(401, response.getStatusCodeValue());
     }
+
     @Test
     public void testLogout() {
         HttpSession session = mock(HttpSession.class);
@@ -75,5 +87,4 @@ public class UserControllerTest {
         assertEquals(401, response.getStatusCodeValue());
         assertEquals("Not logged in", response.getBody());
     }
-
 }

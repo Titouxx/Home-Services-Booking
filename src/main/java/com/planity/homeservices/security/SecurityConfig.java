@@ -19,24 +19,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Désactive CSRF pour compatibilité fetch React
+                .csrf(csrf -> csrf.disable()) // 🔓 désactivation CSRF pour le fetch React
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/", "/index.html", "/vite.svg", "/assets/**",
-                                "/login", "/register"
+                                "/login", "/register",
+                                "/api/services", "/api/services/**" // ✅ on laisse passer les services même sans auth
                         ).permitAll()
-                        .requestMatchers("/api/services/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.disable()) // ❗️ à restreindre en prod (désactive protections XSS, frame, etc.)
-                .formLogin(form -> form.disable()) // Pas de form HTML
+                .formLogin(form -> form.disable()) // pas de form HTML Spring
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
                         .logoutSuccessUrl("/")
                 )
                 .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // permet de créer la session si elle n'existe pas
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                 );
 
