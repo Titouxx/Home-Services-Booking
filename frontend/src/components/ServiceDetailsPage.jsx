@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import MyCalendar from "./Calendar";
 
 const ServiceDetailsPage = () => {
   const { id } = useParams();
   const [subServices, setSubServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedSubService, setSelectedSubService] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   useEffect(() => {
     fetch(`/api/subservices?serviceId=${id}`)
@@ -22,6 +25,14 @@ const ServiceDetailsPage = () => {
         setLoading(false);
       });
   }, [id]);
+
+  const handleBookClick = () => {
+    if (!selectedSubService) {
+      alert("Veuillez sélectionner un sous-service.");
+      return;
+    }
+    setShowCalendar(true);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -60,9 +71,20 @@ const ServiceDetailsPage = () => {
       </header>
 
       <div style={{ padding: "2rem" }}>
-        <h2 style={{ color: "#4B6000", marginBottom: "1.5rem" }}>
-          Sub-services
-        </h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <h2 style={{ color: "#4B6000" }}>Sub-services</h2>
+          <button onClick={handleBookClick} style={bookButtonStyle}>
+            Book
+          </button>
+        </div>
+
         <div
           style={{
             display: "flex",
@@ -71,17 +93,22 @@ const ServiceDetailsPage = () => {
             flexWrap: "wrap",
           }}
         >
-          {subServices.map((sub, idx) => (
+          {subServices.map((sub) => (
             <div
-              key={idx}
+              key={sub.id}
+              onClick={() => setSelectedSubService(sub)}
               style={{
-                border: "1px solid #ddd",
+                border:
+                  selectedSubService?.id === sub.id
+                    ? "2px solid #4B6000"
+                    : "1px solid #ddd",
                 padding: "1.5rem",
                 borderRadius: "12px",
                 backgroundColor: "#f9fce8",
                 maxWidth: "400px",
                 maxHeight: "400px",
                 boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                cursor: "pointer",
               }}
             >
               <h3 style={{ color: "#4B6000" }}>🔧 {sub.name}</h3>
@@ -102,6 +129,14 @@ const ServiceDetailsPage = () => {
             </div>
           ))}
         </div>
+
+        {showCalendar && (
+          <div style={modalOverlay} onClick={() => setShowCalendar(false)}>
+            <div style={modalContent} onClick={(e) => e.stopPropagation()}>
+              <MyCalendar selectedService={selectedSubService} />
+            </div>
+          </div>
+        )}
       </div>
 
       <footer
@@ -129,6 +164,7 @@ const ServiceDetailsPage = () => {
   );
 };
 
+// Styles
 const linkStyle = {
   marginRight: "15px",
   textDecoration: "none",
@@ -142,6 +178,36 @@ const basketStyle = {
   border: "none",
   padding: "6px 12px",
   borderRadius: "5px",
+};
+
+const bookButtonStyle = {
+  background: "#4B6000",
+  color: "white",
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "8px",
+  fontWeight: "bold",
+  cursor: "pointer",
+};
+
+const modalOverlay = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100vh",
+  backgroundColor: "rgba(0,0,0,0.25)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 1000,
+};
+
+const modalContent = {
+  background: "transparent",
+  padding: "25px",
+  borderRadius: "12px",
+  width: "320px",
 };
 
 export default ServiceDetailsPage;
