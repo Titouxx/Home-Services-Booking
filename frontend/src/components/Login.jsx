@@ -1,69 +1,77 @@
+// src/components/Login.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";  // ← on importe Link
+import Header from "./Header";
+import "../styles/Auth.css";
 
-const Login = () => {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    // 🔒 Redirection si déjà connecté
     useEffect(() => {
-        fetch("http://localhost:8080/api/auth/me", {
-            credentials: "include",
-        })
-            .then((res) => {
-                if (res.ok) {
-                    navigate("/"); // redirection si connecté
-                }
-            })
+        fetch("/api/auth/me", { credentials: "include" })
+            .then((r) => r.ok && navigate("/"))
             .catch(() => {});
-    }, []);
+    }, [navigate]);
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
-            const response = await fetch("http://localhost:8080/api/auth/login", {
+            const resp = await fetch("/api/auth/login", {
                 method: "POST",
                 credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                alert(data.message);
+            if (resp.ok) {
                 navigate("/");
             } else {
                 alert("Identifiants invalides");
             }
-        } catch (error) {
-            console.error("Erreur lors de la connexion :", error);
+        } catch (err) {
+            console.error(err);
+            alert("Erreur réseau, réessayez");
         }
     };
 
     return (
-        <div style={{ textAlign: "center", marginTop: "100px" }}>
-            <h2>Connexion</h2>
-            <input
-                type="text"
-                placeholder="Nom d'utilisateur"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <br />
-            <input
-                type="password"
-                placeholder="Mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <br />
-            <button onClick={handleLogin}>Se connecter</button>
-            <br /><br />
-            <button onClick={() => navigate("/register")}>S'inscrire</button>
+        <div className="auth-page">
+            <Header />
+            <div className="auth-container">
+                <h2 className="auth-title">Connexion</h2>
+                <form onSubmit={handleLogin} className="auth-form">
+                    <input
+                        className="auth-input"
+                        type="text"
+                        placeholder="Nom d’utilisateur"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                    <input
+                        className="auth-input"
+                        type="password"
+                        placeholder="Mot de passe"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <button className="auth-button" type="submit">
+                        Se connecter
+                    </button>
+                </form>
+                <p className="auth-switch">
+                    Pas encore inscrit ?{" "}
+                    <span className="auth-link" onClick={() => navigate("/register")}>
+            Créez un compte
+          </span>
+                </p>
+                {/* --- nouveau lien Terms en bas --- */}
+                <p className="auth-terms">
+                    <Link to="/terms">Terms of Service</Link>
+                </p>
+            </div>
         </div>
     );
-};
-
-export default Login;
+}

@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./styles/NavBar.css";
 import "./styles/ServiceCard.css";
 import "./styles/Calendar.css";
+import "./styles/Auth.css";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
