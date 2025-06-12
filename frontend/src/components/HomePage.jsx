@@ -1,6 +1,9 @@
+// src/components/HomePage.jsx
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MyCalendar from "./Calendar";
+import "../styles/HomePage.css";
+import Layout from "./Layout";
 
 export function HomePage() {
     const [services, setServices] = useState([]);
@@ -10,8 +13,6 @@ export function HomePage() {
         return saved ? JSON.parse(saved) : [];
     });
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         fetch("/api/services")
             .then((res) => res.json())
@@ -20,11 +21,10 @@ export function HomePage() {
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("basketItems", JSON.stringify(basketItems));
-    }, [basketItems]);
+        window.scrollTo(0, 0);
+    }, []);
 
     const handleCardClick = (e, service) => {
-        // Ignorer si on clique sur un bouton
         if (e.target.closest("button")) return;
         setSelectedService(service);
     };
@@ -36,151 +36,56 @@ export function HomePage() {
             date: null,
             time: null,
         };
-        setBasketItems([...basketItems, newItem]);
+        const updatedItems = [...basketItems, newItem];
+        setBasketItems(updatedItems);
+        localStorage.setItem("basketItems", JSON.stringify(updatedItems));
     };
 
     return (
-        <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-            <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Link to="/" style={logoStyle}>PLANITY</Link>
-
-                <nav>
-                    <Link to="/about" style={linkStyle}>Who we are</Link>
-                    <Link to="/profile" style={linkStyle}>My profile</Link>
-                    <Link to="/provider-dashboard" className="nav-link">Provider Dashboard</Link>
-
-                    <button onClick={() => navigate("/basket")} style={basketStyle}>
-                        Basket ({basketItems.length})
-                    </button>
-
-                </nav>
-            </header>
-
-            <main style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
-                <section style={serviceListStyle}>
-                    <div style={sectionTitle}>
-                        <h2 style={sectionTitleH2}>Our Services</h2>
-                        <hr style={sectionTitleHr} />
+        <Layout basketCount={basketItems.length}>
+            <main className="home-main">
+                <section className="service-list">
+                    <div className="section-title">
+                        <h2>Our Services</h2>
+                        <hr />
                     </div>
 
-                    {services.map((service) => (
-                        <div
-                            key={service.id}
-                            onClick={(e) => handleCardClick(e, service)}
-                            style={{
-                                ...serviceCard,
-                                border: selectedService?.id === service.id ? "2px solid #4B6000" : "none",
-                                cursor: "pointer",
-                            }}
-                        >
-                            <div>
-                                <h3>🔧 {service.name}</h3>
-                                <p style={{ color: "#4B6000" }}>
-                                    {service.price}€ / {service.durationMinutes}min
-                                </p>
+                    {services.length === 0 ? (
+                        <p>Loading services...</p>
+                    ) : (
+                        services.map((service) => (
+                            <div
+                                key={service.id}
+                                onClick={(e) => handleCardClick(e, service)}
+                                className={`service-card ${selectedService?.id === service.id ? "selected" : ""}`}
+                                aria-label={`Select ${service.name}`}
+                            >
+                                <div>
+                                    <h3>🔧 {service.name}</h3>
+                                    <p style={{ color: "#4B6000" }}>
+                                        {service.price}€ / {service.durationMinutes}min
+                                    </p>
+                                </div>
+                                <div style={{ display: "flex", gap: "10px" }}>
+                                    <Link
+                                        to={`/services/${service.id}`}
+                                        className="details-button"
+                                        onClick={(e) => e.stopPropagation()}
+                                        aria-label={`See details for ${service.name}`}
+                                    >
+                                        Details
+                                    </Link>
+                                </div>
                             </div>
-                            <div style={{ display: "flex", gap: "10px" }}>
-                                <Link
-                                    to={`/services/${service.id}`}
-                                    className="details-button"
-                                    style={buttonStyle}
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    Details
-                                </Link>
-
-                            </div>
-                        </div>
-
-                    ))}
+                        ))
+                    )}
                 </section>
 
-                <aside style={calendarCard}>
+                <aside className="calendar-card">
                     <MyCalendar selectedService={selectedService} />
                 </aside>
             </main>
+        </Layout>
 
-            <footer style={{ marginTop: "50px", textAlign: "center", fontSize: "12px", color: "#666" }}>
-                © All rights reserved
-            </footer>
-        </div>
     );
 }
-
-// === Styles ===
-const linkStyle = {
-    marginRight: "15px",
-    textDecoration: "none",
-    color: "#4B6000",
-    fontWeight: "bold",
-};
-
-const basketStyle = {
-    background: "#4B6000",
-    color: "white",
-    border: "none",
-    padding: "6px 12px",
-    borderRadius: "5px",
-    cursor: "pointer",
-};
-
-const serviceCard = {
-    background: "#f7fbea",
-    padding: "15px",
-    marginBottom: "15px",
-    borderRadius: "10px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    transition: "box-shadow 0.2s ease",
-};
-
-const buttonStyle = {
-    background: "#4B6000",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    borderRadius: "20px",
-    cursor: "pointer",
-    fontSize: "0.9rem",
-};
-
-const calendarCard = {
-    marginRight: "30px",
-    marginTop: "48px",
-    padding: "15px",
-    borderRadius: "10px",
-    width: "300px",
-
-};
-
-const serviceListStyle = {
-    flex: 3,
-    maxHeight: "75vh",
-    overflowY: "auto",
-    paddingRight: "10px",
-};
-
-const sectionTitle = {
-    marginBottom: "20px",
-};
-
-const sectionTitleH2 = {
-    fontSize: "2rem",
-    fontWeight: "500",
-    marginBottom: "5px",
-    fontFamily: "Georgia, serif",
-};
-
-const sectionTitleHr = {
-    border: "none",
-    borderTop: "1px solid #e0e0e0",
-};
-
-const logoStyle = {
-    color: "#4B6000",
-    textDecoration: "none",
-    fontSize: "2rem",
-    fontWeight: "bold",
-    fontFamily: "Georgia, serif",
-};

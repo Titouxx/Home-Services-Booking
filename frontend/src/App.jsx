@@ -5,6 +5,7 @@ import ServiceDetailsPage from "./components/ServiceDetailsPage";
 import TermsPage from "./components/TermsPage";
 import { BasketPage } from "./components/BasketPage.jsx";
 import { ProviderHomePage } from "./components/ProviderHomePage";
+import AboutPage from "./components/AboutPage";
 
 function App() {
     return (
@@ -14,7 +15,8 @@ function App() {
                 <Route path="/services/:id" element={<ServiceDetailsPage />} />
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/basket" element={<BasketPage />} />
-                <Route path="/provider-dashboard" element={<ProviderHomePage />} /> {/* ✅ ici aussi */}
+                <Route path="/provider-dashboard" element={<ProviderHomePage />} />
+                <Route path="/about" element={<AboutPage />} />
             </Routes>
         </BrowserRouter>
     );
