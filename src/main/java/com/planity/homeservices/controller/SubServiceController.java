@@ -27,5 +27,9 @@ public class SubServiceController {
         return repository.findTop3ByServiceIdOrderByIdAsc(serviceId);
     }
 
-}
 
+    @GetMapping("/all")
+    public List<SubService> getAllSubServices() {
+        return repository.findAll();
+    }
+}
