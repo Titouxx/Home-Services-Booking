@@ -2,7 +2,6 @@ package com.planity.homeservices.controller;
 
 import com.planity.homeservices.model.Service;
 import com.planity.homeservices.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ public class ServiceController {
 
     private final ServiceRepository repository;
 
-    @Autowired
     public ServiceController(ServiceRepository repository) {
         this.repository = repository;
     }

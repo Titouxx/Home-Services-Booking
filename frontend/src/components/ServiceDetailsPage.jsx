@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import MyCalendar from "./Calendar";
 
 const ServiceDetailsPage = () => {
   const { id } = useParams();
-  const [service, setService] = useState(null);
+  const [subServices, setSubServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedSubService, setSelectedSubService] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/services/${id}`)
+    fetch(`/api/subservices?serviceId=${id}`)
       .then((res) => {
-        if (!res.ok) throw new Error("Service non trouvé");
+        if (!res.ok) throw new Error("Sous-services non trouvés");
         return res.json();
       })
       .then((data) => {
-        setService(data);
+        setSubServices(data.slice(0, 3));
         setLoading(false);
       })
       .catch((err) => {
@@ -23,8 +26,16 @@ const ServiceDetailsPage = () => {
       });
   }, [id]);
 
+  const handleBookClick = () => {
+    if (!selectedSubService) {
+      alert("Veuillez sélectionner un sous-service.");
+      return;
+    }
+    setShowCalendar(true);
+  };
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error}</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif" }}>
@@ -60,61 +71,74 @@ const ServiceDetailsPage = () => {
       </header>
 
       <div style={{ padding: "2rem" }}>
-        <h2 style={{ color: "#4B6000", marginBottom: "1.5rem" }}>
-          Service Details
-        </h2>
         <div
           style={{
-            border: "1px solid #ddd",
-            padding: "1.5rem",
-            borderRadius: "12px",
-            backgroundColor: "#f9fce8",
-            maxWidth: "600px",
-            margin: "0 auto",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1.5rem",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <h3 style={{ margin: 0, color: "#4B6000" }}>🔧 {service.name}</h3>
-          </div>
+          <h2 style={{ color: "#4B6000" }}>Sub-services</h2>
+          <button onClick={handleBookClick} style={bookButtonStyle}>
+            Book
+          </button>
+        </div>
 
-          <div style={{ marginBottom: "1rem" }}>
-            <strong style={{ color: "#4B6000" }}>Price :</strong>
-            <span style={{ marginLeft: "0.5rem" }}>{service.price} € / h</span>
-          </div>
-
-          <div>
-            <strong
-              style={{
-                color: "#4B6000",
-                display: "block",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Description :
-            </strong>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "2rem",
+            flexWrap: "wrap",
+          }}
+        >
+          {subServices.map((sub) => (
             <div
+              key={sub.id}
+              onClick={() => setSelectedSubService(sub)}
               style={{
-                backgroundColor: "white",
-                padding: "1rem",
-                borderRadius: "8px",
-                borderLeft: "3px solid #4B6000",
-                lineHeight: "1.6",
+                border:
+                  selectedSubService?.id === sub.id
+                    ? "2px solid #4B6000"
+                    : "1px solid #ddd",
+                padding: "1.5rem",
+                borderRadius: "12px",
+                backgroundColor: "#f9fce8",
+                maxWidth: "400px",
+                maxHeight: "400px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                cursor: "pointer",
               }}
             >
-              {service.description ||
-                "Aucune description disponible pour ce service."}
+              <h3 style={{ color: "#4B6000" }}>🔧 {sub.name}</h3>
+              <p>
+                <strong style={{ color: "#4B6000" }}>Prix :</strong> {sub.price}{" "}
+                € / {sub.duration_minutes} minutes
+              </p>
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: "1rem",
+                  borderRadius: "8px",
+                  borderLeft: "3px solid #4B6000",
+                }}
+              >
+                {sub.description}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {showCalendar && (
+          <div style={modalOverlay} onClick={() => setShowCalendar(false)}>
+            <div style={modalContent} onClick={(e) => e.stopPropagation()}>
+              <MyCalendar selectedService={selectedSubService} />
             </div>
           </div>
-        </div>
+        )}
       </div>
+
       <footer
         style={{
           marginTop: "50px",
@@ -140,6 +164,7 @@ const ServiceDetailsPage = () => {
   );
 };
 
+// Styles
 const linkStyle = {
   marginRight: "15px",
   textDecoration: "none",
@@ -151,9 +176,38 @@ const basketStyle = {
   background: "#4B6000",
   color: "white",
   border: "none",
-  padding: "8px 16px",
+  padding: "6px 12px",
   borderRadius: "5px",
+};
+
+const bookButtonStyle = {
+  background: "#4B6000",
+  color: "white",
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "8px",
+  fontWeight: "bold",
   cursor: "pointer",
+};
+
+const modalOverlay = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100vh",
+  backgroundColor: "rgba(0,0,0,0.25)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 1000,
+};
+
+const modalContent = {
+  background: "transparent",
+  padding: "25px",
+  borderRadius: "12px",
+  width: "320px",
 };
 
 export default ServiceDetailsPage;
