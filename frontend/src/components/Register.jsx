@@ -1,10 +1,11 @@
+// src/components/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Register = () => {
+export default function Register() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [status, setStatus] = useState('client');
+    const [status, setStatus]     = useState('client');
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
@@ -22,10 +23,12 @@ const Register = () => {
                 alert('Inscription réussie !');
                 navigate('/login');
             } else {
-                alert('Erreur lors de l\'inscription.');
+                const text = await response.text();
+                alert(`Erreur lors de l'inscription : ${text}`);
             }
         } catch (error) {
             console.error('Erreur :', error);
+            alert('Une erreur est survenue. Veuillez réessayer.');
         }
     };
 
@@ -47,14 +50,17 @@ const Register = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <select value={status} onChange={(e) => setStatus(e.target.value)}>
+                <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    required
+                >
                     <option value="client">Client</option>
                     <option value="prestataire">Prestataire</option>
+                    <option value="administrateur">Administrateur</option>
                 </select>
                 <button type="submit">S'inscrire</button>
             </form>
         </div>
     );
-};
-
-export default Register;
+}
