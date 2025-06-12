@@ -33,3 +33,4 @@ build/
 .vscode/
 debug.txt
 tree.txt
+/src/main/resources/static/assets
