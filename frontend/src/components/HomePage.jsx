@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MyCalendar from "./Calendar";
+import Footer from "./Footer";
 
 export function HomePage() {
     const [services, setServices] = useState([]);
@@ -24,35 +25,41 @@ export function HomePage() {
     }, [basketItems]);
 
     const handleCardClick = (e, service) => {
-        // Ignorer si on clique sur un bouton
         if (e.target.closest("button")) return;
         setSelectedService(service);
     };
 
-    const addToBasket = (service) => {
-        const newItem = {
-            id: Date.now(),
-            service,
-            date: null,
-            time: null,
-        };
-        setBasketItems([...basketItems, newItem]);
+    const handleBasketClick = () => {
+        navigate("/basket");
     };
 
     return (
         <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-            <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Link to="/" style={logoStyle}>PLANITY</Link>
+            <header
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+            >
+                <Link to="/" style={logoStyle}>
+                    PLANITY
+                </Link>
 
                 <nav>
-                    <Link to="/about" style={linkStyle}>Who we are</Link>
-                    <Link to="/profile" style={linkStyle}>My profile</Link>
-                    <Link to="/provider-dashboard" className="nav-link">Provider Dashboard</Link>
+                    <Link to="/about" style={linkStyle}>
+                        Who we are
+                    </Link>
+                    <Link to="/profile" style={linkStyle}>
+                        My profile
+                    </Link>
+                    <Link to="/provider-dashboard" style={linkStyle}>
+                        Provider Dashboard
+                    </Link>
 
-                    <button onClick={() => navigate("/basket")} style={basketStyle}>
+                    <button onClick={handleBasketClick} style={basketStyle}>
                         Basket ({basketItems.length})
                     </button>
-
                 </nav>
             </header>
 
@@ -69,7 +76,10 @@ export function HomePage() {
                             onClick={(e) => handleCardClick(e, service)}
                             style={{
                                 ...serviceCard,
-                                border: selectedService?.id === service.id ? "2px solid #4B6000" : "none",
+                                border:
+                                    selectedService?.id === service.id
+                                        ? "2px solid #4B6000"
+                                        : "none",
                                 cursor: "pointer",
                             }}
                         >
@@ -82,16 +92,13 @@ export function HomePage() {
                             <div style={{ display: "flex", gap: "10px" }}>
                                 <Link
                                     to={`/services/${service.id}`}
-                                    className="details-button"
                                     style={buttonStyle}
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     Details
                                 </Link>
-
                             </div>
                         </div>
-
                     ))}
                 </section>
 
@@ -100,9 +107,8 @@ export function HomePage() {
                 </aside>
             </main>
 
-            <footer style={{ marginTop: "50px", textAlign: "center", fontSize: "12px", color: "#666" }}>
-                © All rights reserved
-            </footer>
+            {/* Appel du footer partagé */}
+            <Footer />
         </div>
     );
 }
@@ -151,7 +157,6 @@ const calendarCard = {
     padding: "15px",
     borderRadius: "10px",
     width: "300px",
-
 };
 
 const serviceListStyle = {
