@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export function BasketPage() {
     const [reservations, setReservations] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("/api/reservations")

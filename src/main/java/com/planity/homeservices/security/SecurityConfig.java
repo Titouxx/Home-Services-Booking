@@ -2,11 +2,17 @@ package com.planity.homeservices.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -15,34 +21,41 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1) Désactivation de CSRF pour vos appels API (React, fetch, etc.)
+                // 1) Activer la prise en charge de CORS
+                .cors().and()
+
+                // 2) Désactiver CSRF (fetch + cookies)
                 .csrf(csrf -> csrf.disable())
 
-                // 2) Définition des accès publics et protégés
+                // 3) Rendre tous les endpoints accessibles (votre app gère l’auth côté front)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/", "/index.html", "/vite.svg", "/assets/**",
-                                "/login", "/register",
-                                "/api/services", "/api/services/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
-                // 3) Page de login fournie par votre front (React sur /login)
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                )
-
-                // 4) Logout
+                // 4) Activer le logout standard (POST /logout)
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
                         .permitAll()
                 );
 
         return http.build();
+    }
+
+    /**
+     * Déclare la politique CORS pour autoriser vos requêtes depuis Vite (5173)
+     * et transmettre les cookies de session.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(List.of("http://localhost:5173"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", cfg);
+        return source;
     }
 
     @Bean
