@@ -47,9 +47,12 @@ export function HomePage() {
                 <nav>
                     <Link to="/about" style={linkStyle}>Who we are</Link>
                     <Link to="/profile" style={linkStyle}>My profile</Link>
+                    <Link to="/provider-dashboard" className="nav-link">Provider Dashboard</Link>
+
                     <button onClick={() => navigate("/basket")} style={basketStyle}>
                         Basket ({basketItems.length})
                     </button>
+
                 </nav>
             </header>
 
