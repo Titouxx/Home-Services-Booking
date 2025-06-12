@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HomePage } from "./components/HomePage.jsx";
 import ServiceDetailsPage from "./components/ServiceDetailsPage";
 import TermsPage from "./components/TermsPage";
+import Login from "./components/Login.jsx";
+import Register from "./components/Register.jsx";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { BasketPage } from "./components/BasketPage.jsx";
 import { ProviderHomePage } from "./components/ProviderHomePage";
 
@@ -10,11 +13,44 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/services/:id" element={<ServiceDetailsPage />} />
+                {/* Pages publiques */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/terms" element={<TermsPage />} />
-                <Route path="/basket" element={<BasketPage />} />
-                <Route path="/provider-dashboard" element={<ProviderHomePage />} /> {/* ✅ ici aussi */}
+
+                {/* Pages protégées (nécessitent authentification) */}
+                <Route
+                    path="/"
+                    element={
+                        <ProtectedRoute>
+                            <HomePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/services/:id"
+                    element={
+                        <ProtectedRoute>
+                            <ServiceDetailsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/basket"
+                    element={
+                        <ProtectedRoute>
+                            <BasketPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/provider-dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <ProviderHomePage />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     );
