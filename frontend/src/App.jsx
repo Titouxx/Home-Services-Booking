@@ -5,6 +5,9 @@ import ServiceDetailsPage from "./components/ServiceDetailsPage";
 import TermsPage from "./components/TermsPage";
 import { BasketPage } from "./components/BasketPage.jsx";
 import { ProviderHomePage } from "./components/ProviderHomePage";
+import Login from "./components/Login.jsx";
+import Register from "./components/Register.jsx";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
     return (
@@ -15,6 +18,14 @@ function App() {
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/basket" element={<BasketPage />} />
                 <Route path="/provider-dashboard" element={<ProviderHomePage />} /> {/* ✅ ici aussi */}
+                {/* Pages publiques */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/terms" element={<TermsPage />} />
+
+                {/* Pages protégées */}
+                <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+                <Route path="/services/:id" element={<ProtectedRoute><ServiceDetailsPage /></ProtectedRoute>} />
             </Routes>
         </BrowserRouter>
     );
