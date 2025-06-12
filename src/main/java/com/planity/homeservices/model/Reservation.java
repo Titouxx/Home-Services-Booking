@@ -2,10 +2,13 @@ package com.planity.homeservices.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Entity
 public class Reservation {
 
@@ -18,9 +21,12 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.EAGER)
     private Service service;
 
-    public void setId(Long id) { this.id = id; }
+    @Column(name = "custom_name")
+    private String customName;
 
-    public void setAppointmentDate(LocalDateTime appointmentDate) { this.appointmentDate = appointmentDate; }
+    @Column(name = "custom_duration")
+    private Integer customDuration;
 
-    public void setService(Service service) { this.service = service; }
+    @Column(name = "custom_price")
+    private BigDecimal customPrice;
 }

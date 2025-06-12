@@ -40,10 +40,12 @@ export function BasketPage() {
                             {reservations.map((item) => (
                                 <div key={item.id} className="basket-item">
                                     <div>
-                                        <h3>🔧 {item.service?.name ?? "Service"}</h3>
+                                        <h3>🔧 {item.customName || item.service?.name}</h3>
                                         <p style={{ color: "#4B6000" }}>
-                                            {item.service?.price}€ / {item.service?.durationMinutes}min
+                                            {(item.customPrice ?? item.service?.price)}€ /
+                                            {(item.customDuration ?? item.service?.durationMinutes)}min
                                         </p>
+
                                         <p>
                                             <strong>Date:</strong> {new Date(item.appointmentDate).toLocaleDateString()}<br />
                                             <strong>Time:</strong> {new Date(item.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

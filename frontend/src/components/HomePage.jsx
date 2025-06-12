@@ -73,7 +73,7 @@ export function HomePage() {
 
                     {searchTerm ? (
                         <>
-                            {/* Show matched services only */}
+                            {/* Matching general services */}
                             {matchingServices.map((service) => (
                                 <div
                                     key={service.id}
@@ -98,21 +98,34 @@ export function HomePage() {
                                 </div>
                             ))}
 
-                            {/* Show matched subservices only */}
-                            {matchingSubServices.map((sub) => (
-                                <div
-                                    key={sub.id}
-                                    className="service-card sub"
-                                    onClick={() => setSelectedService(sub)}
-                                >
-                                    <div>
-                                        <h4> {sub.name}</h4>
-                                        <p className="service-price">
-                                            {sub.price}€ / {sub.duration_minutes}min
-                                        </p>
+                            {/* Matching subservices */}
+                            {matchingSubServices.map((sub) => {
+
+                                const normalizedSub = {
+                                    id: sub.id,
+                                    name: sub.name,
+                                    price: sub.price,
+                                    durationMinutes: sub.duration_minutes,
+                                    description: sub.description,
+                                    isSubService: true,
+                                    service: sub.service, // parent service info needed for booking
+                                };
+
+                                return (
+                                    <div
+                                        key={normalizedSub.id}
+                                        onClick={(e) => handleCardClick(e, normalizedSub)}
+                                        className={`service-card ${selectedService?.id === normalizedSub.id ? "selected" : ""}`}
+                                    >
+                                        <div>
+                                            <h3>🔧 {normalizedSub.name}</h3>
+                                            <p className="service-price">
+                                                {normalizedSub.price}€ / {normalizedSub.durationMinutes}min
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </>
                     ) : (
                         services.map((service) => (
@@ -142,7 +155,10 @@ export function HomePage() {
                 </section>
 
                 <aside className="calendar-card">
-                    <MyCalendar selectedService={selectedService} />
+                    <MyCalendar
+                        selectedService={selectedService}
+                        addToBasket={addToBasket}
+                    />
                 </aside>
             </main>
         </Layout>
