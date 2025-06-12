@@ -28,10 +28,27 @@ const MyCalendar = ({ selectedService }) => {
         const [hour, minute] = selectedHour.split(":");
         fullDate.setHours(hour, minute);
 
-        alert(`✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString()}`);
-
-        setShowModal(false);
-        setSelectedHour("");
+        fetch("/api/reservations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                serviceId: selectedService.id,
+                appointmentDate: fullDate,
+            }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error("Booking failed");
+                return res.json();
+            })
+            .then(() => {
+                alert(`✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString()}`);
+                setShowModal(false);
+                setSelectedHour("");
+            })
+            .catch((err) => {
+                alert("❌ Booking failed. Try again.");
+                console.error(err);
+            });
     };
 
     return (

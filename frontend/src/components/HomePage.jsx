@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MyCalendar from "./Calendar";
 
 export function HomePage() {
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState(null);
+    const [basketItems, setBasketItems] = useState(() => {
+        const saved = localStorage.getItem("basketItems");
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("/api/services")
@@ -13,20 +19,37 @@ export function HomePage() {
             .catch((err) => console.error("Failed to fetch services:", err));
     }, []);
 
+    useEffect(() => {
+        localStorage.setItem("basketItems", JSON.stringify(basketItems));
+    }, [basketItems]);
+
     const handleCardClick = (e, service) => {
-        // Prevent click from triggering when the Details button is clicked
-        if (e.target.closest(".details-button")) return;
+        // Ignorer si on clique sur un bouton
+        if (e.target.closest("button")) return;
         setSelectedService(service);
+    };
+
+    const addToBasket = (service) => {
+        const newItem = {
+            id: Date.now(),
+            service,
+            date: null,
+            time: null,
+        };
+        setBasketItems([...basketItems, newItem]);
     };
 
     return (
         <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h1 style={{ color: "#4B6000" }}>PLANITY</h1>
+                <Link to="/" style={logoStyle}>PLANITY</Link>
+
                 <nav>
-                    <a href="/templates/login.html" style={linkStyle}>Who we are</a>
-                    <a href="/templates/login.html" style={linkStyle}>My profile</a>
-                    <button style={basketStyle}>Basket (3)</button>
+                    <Link to="/about" style={linkStyle}>Who we are</Link>
+                    <Link to="/profile" style={linkStyle}>My profile</Link>
+                    <button onClick={() => navigate("/basket")} style={basketStyle}>
+                        Basket ({basketItems.length})
+                    </button>
                 </nav>
             </header>
 
@@ -44,7 +67,7 @@ export function HomePage() {
                             style={{
                                 ...serviceCard,
                                 border: selectedService?.id === service.id ? "2px solid #4B6000" : "none",
-                                cursor: "pointer"
+                                cursor: "pointer",
                             }}
                         >
                             <div>
@@ -53,15 +76,19 @@ export function HomePage() {
                                     {service.price}€ / {service.durationMinutes}min
                                 </p>
                             </div>
-                            <Link
-                                to={`/services/${service.id}`}
-                                className="details-button"
-                                style={buttonStyle}
-                                onClick={(e) => e.stopPropagation()} // prevent card selection on button click
-                            >
-                                Details
-                            </Link>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                <Link
+                                    to={`/services/${service.id}`}
+                                    className="details-button"
+                                    style={buttonStyle}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    Details
+                                </Link>
+
+                            </div>
                         </div>
+
                     ))}
                 </section>
 
@@ -77,7 +104,7 @@ export function HomePage() {
     );
 }
 
-// Styles
+// === Styles ===
 const linkStyle = {
     marginRight: "15px",
     textDecoration: "none",
@@ -91,6 +118,7 @@ const basketStyle = {
     border: "none",
     padding: "6px 12px",
     borderRadius: "5px",
+    cursor: "pointer",
 };
 
 const serviceCard = {
@@ -108,9 +136,10 @@ const buttonStyle = {
     background: "#4B6000",
     color: "white",
     border: "none",
-    padding: "8px 16px",
+    padding: "8px 12px",
     borderRadius: "20px",
     cursor: "pointer",
+    fontSize: "0.9rem",
 };
 
 const calendarCard = {
@@ -119,6 +148,7 @@ const calendarCard = {
     padding: "15px",
     borderRadius: "10px",
     width: "300px",
+
 };
 
 const serviceListStyle = {
@@ -142,4 +172,12 @@ const sectionTitleH2 = {
 const sectionTitleHr = {
     border: "none",
     borderTop: "1px solid #e0e0e0",
+};
+
+const logoStyle = {
+    color: "#4B6000",
+    textDecoration: "none",
+    fontSize: "2rem",
+    fontWeight: "bold",
+    fontFamily: "Georgia, serif",
 };
