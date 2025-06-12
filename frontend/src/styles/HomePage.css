@@ -10,6 +10,7 @@
     max-height: 75vh;
     overflow-y: auto;
     padding-right: 10px;
+    margin-top: 50px;
 }
 
 .section-title {
@@ -61,4 +62,24 @@
     padding: 15px;
     border-radius: 10px;
     width: 300px;
+}
+.section-title-with-search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.section-title-with-search h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    width: 200px;
 }

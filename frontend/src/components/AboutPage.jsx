@@ -44,4 +44,5 @@ const AboutPage = () => {
         </Layout>
     );
 };
+export default AboutPage;
 

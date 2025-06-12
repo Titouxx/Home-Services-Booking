@@ -1,4 +1,3 @@
-// src/components/HomePage.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MyCalendar from "./Calendar";
@@ -12,6 +11,7 @@ export function HomePage() {
         const saved = localStorage.getItem("basketItems");
         return saved ? JSON.parse(saved) : [];
     });
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         fetch("/api/services")
@@ -41,19 +41,30 @@ export function HomePage() {
         localStorage.setItem("basketItems", JSON.stringify(updatedItems));
     };
 
+    const filteredServices = services.filter(service =>
+        service.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <Layout basketCount={basketItems.length}>
             <main className="home-main">
                 <section className="service-list">
-                    <div className="section-title">
+                    <div className="section-title-with-search">
                         <h2>Our Services</h2>
-                        <hr />
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Search services..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
+                    <hr />
 
-                    {services.length === 0 ? (
-                        <p>Loading services...</p>
+                    {filteredServices.length === 0 ? (
+                        <p>No services found.</p>
                     ) : (
-                        services.map((service) => (
+                        filteredServices.map((service) => (
                             <div
                                 key={service.id}
                                 onClick={(e) => handleCardClick(e, service)}
@@ -62,11 +73,11 @@ export function HomePage() {
                             >
                                 <div>
                                     <h3>🔧 {service.name}</h3>
-                                    <p style={{ color: "#4B6000" }}>
+                                    <p className="service-price">
                                         {service.price}€ / {service.durationMinutes}min
                                     </p>
                                 </div>
-                                <div style={{ display: "flex", gap: "10px" }}>
+                                <div className="button-container">
                                     <Link
                                         to={`/services/${service.id}`}
                                         className="details-button"
@@ -86,6 +97,5 @@ export function HomePage() {
                 </aside>
             </main>
         </Layout>
-
     );
 }
