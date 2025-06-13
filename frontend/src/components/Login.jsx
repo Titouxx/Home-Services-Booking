@@ -11,7 +11,16 @@ export default function Login() {
 
     useEffect(() => {
         fetch("/api/auth/me", { credentials: "include" })
-            .then((r) => r.ok && navigate("/"))
+            .then(async (r) => {
+                if (r.ok) {
+                    const user = await r.json();
+                    if (user.status === "prestataire") {
+                        navigate("/provider-dashboard");
+                    } else {
+                        navigate("/");
+                    }
+                }
+            })
             .catch(() => {});
     }, [navigate]);
 
@@ -30,8 +39,12 @@ export default function Login() {
                 if (meResp.ok) {
                     const user = await meResp.json();
                     localStorage.setItem("user", JSON.stringify(user));
+                    if (user.status === "prestataire") {
+                        navigate("/provider-dashboard");
+                    } else {
+                        navigate("/");
+                    }
                 }
-                navigate("/");
             } else {
                 alert("Identifiants invalides");
             }

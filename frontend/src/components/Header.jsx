@@ -17,9 +17,9 @@ const Header = ({ basketCount }) => {
                 <Link to="/profile" style={{ marginRight: "15px", textDecoration: "none", color: "#4B6000", fontWeight: "bold" }}>
                     My profile
                 </Link>
-                <Link to="/provider-dashboard" style={{ marginRight: "15px", textDecoration: "none", color: "#4B6000", fontWeight: "bold" }}>
+               {/* <Link to="/provider-dashboard" style={{ marginRight: "15px", textDecoration: "none", color: "#4B6000", fontWeight: "bold" }}>
                     Provider Dashboard
-                </Link>
+                </Link>*/}
                 <button 
                     onClick={() => navigate("/basket")} 
                     style={{ 
