@@ -44,4 +44,9 @@ public class ProviderAvailabilityController {
         providerAvailabilityRepository.save(pa);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/availability/by-service")
+    public ResponseEntity<List<ProviderAvailability>> getByService(@RequestParam String serviceName) {
+        return ResponseEntity.ok(providerAvailabilityRepository.findByServiceName(serviceName));
+    }
 } 

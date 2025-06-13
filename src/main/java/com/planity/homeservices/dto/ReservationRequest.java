@@ -25,4 +25,8 @@ public class ReservationRequest {
 
     public BigDecimal getCustomPrice() { return customPrice; }
     public void setCustomPrice(BigDecimal customPrice) { this.customPrice = customPrice; }
+
+    private Long userId;
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

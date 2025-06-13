@@ -29,4 +29,7 @@ public class Reservation {
 
     @Column(name = "custom_price")
     private BigDecimal customPrice;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
 }

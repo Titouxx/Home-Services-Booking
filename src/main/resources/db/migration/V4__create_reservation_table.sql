@@ -4,5 +4,6 @@ CREATE TABLE reservation (
                              service_id BIGINT REFERENCES services(id),
                              custom_name VARCHAR(255),
                              custom_duration INTEGER,
-                             custom_price NUMERIC(10, 2)
+                             custom_price NUMERIC(10, 2),
+                             user_id BIGINT REFERENCES users(id)
 );

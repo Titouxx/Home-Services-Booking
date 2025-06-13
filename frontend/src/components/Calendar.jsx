@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Calendar.css";
@@ -9,6 +9,7 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
   const [date, setDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
   const [selectedHour, setSelectedHour] = useState("");
+  const [availabilities, setAvailabilities] = useState([]);
 
   const handleBook = () => {
     if (!selectedService) {
@@ -33,6 +34,9 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
         serviceId: selectedService.service?.id || selectedService.id,
         appointmentDate: fullDate.toISOString(),
       };
+
+      const user = JSON.parse(localStorage.getItem("user"));
+      payload.userId = user?.id;
 
       if (selectedService.isSubService) {
         payload.customName = selectedService.name;
@@ -75,6 +79,27 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
     }
   };
 
+  useEffect(() => {
+    if (selectedService) {
+      fetch(`/api/provider/availability/by-service?serviceName=${encodeURIComponent(selectedService.name)}`)
+        .then(res => res.json())
+        .then(data => setAvailabilities(Array.isArray(data) ? data : []));
+    } else {
+      setAvailabilities([]);
+    }
+  }, [selectedService]);
+
+  // Get available times for the selected date
+  const availableTimesForDate = availabilities
+    .filter(a => new Date(a.availableDate).toDateString() === date.toDateString())
+    .map(a => {
+      const d = new Date(a.availableDate);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    });
+
+  const noAvailabilities = selectedService && availabilities.length === 0;
+  const noTimesForDate = selectedService && availableTimesForDate.length === 0;
+
   return (
     <div className="calendar">
       <h3>Calendar</h3>
@@ -92,30 +117,49 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
         value={date}
         minDate={new Date()}
         className="custom-calendar"
+        tileDisabled={({ date: d }) =>
+          selectedService && availabilities.length > 0 &&
+          !availabilities.some(a => new Date(a.availableDate).toDateString() === d.toDateString())
+        }
       />
 
-      <button className="calendar-button" onClick={handleBook}>
+      <button
+        className="calendar-button"
+        onClick={handleBook}
+        disabled={noAvailabilities}
+      >
         Book on {date.toLocaleDateString()}
       </button>
+      {noAvailabilities && (
+        <div style={{ color: '#b00', marginTop: 10, fontWeight: 500 }}>
+          No availability for this service
+        </div>
+      )}
 
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
             <h4>Select an available time</h4>
+            {noTimesForDate ? (
+              <div style={{ color: '#b00', marginBottom: 10 }}>
+                No available times for this date
+              </div>
+            ) : null}
             <select
               value={selectedHour}
               onChange={(e) => setSelectedHour(e.target.value)}
               className="time-select"
+              disabled={noTimesForDate}
             >
               <option value="">-- Choose a time --</option>
-              {AVAILABLE_HOURS.map((time) => (
+              {availableTimesForDate.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>
               ))}
             </select>
             <div className="modal-buttons">
-              <button className="confirm" onClick={confirmBooking}>
+              <button className="confirm" onClick={confirmBooking} disabled={noTimesForDate || !selectedHour}>
                 Confirm
               </button>
               <button className="cancel" onClick={() => setShowModal(false)}>
