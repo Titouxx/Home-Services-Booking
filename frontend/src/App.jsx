@@ -8,6 +8,7 @@ import Register from "./components/Register.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { BasketPage } from "./components/BasketPage.jsx";
 import { ProviderHomePage } from "./components/ProviderHomePage";
+import AboutPage from "./components/AboutPage";
 
 function App() {
   return (

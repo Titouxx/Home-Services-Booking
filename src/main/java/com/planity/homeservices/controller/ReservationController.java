@@ -25,17 +25,22 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<?> createReservation(@RequestBody ReservationRequest request) {
-        Optional<Service> service = serviceRepository.findById(request.getServiceId());
-        if (service.isEmpty()) {
+        Optional<Service> serviceOpt = serviceRepository.findById(request.getServiceId());
+        if (serviceOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Service not found");
         }
 
         Reservation reservation = new Reservation();
-        reservation.setService(service.get());
+        reservation.setService(serviceOpt.get());
         reservation.setAppointmentDate(request.getAppointmentDate());
 
-        Reservation saved = reservationRepository.save(reservation);
-        return ResponseEntity.ok(saved);
+        if (request.getCustomName() != null) {
+            reservation.setCustomName(request.getCustomName());
+            reservation.setCustomDuration(request.getCustomDuration());
+            reservation.setCustomPrice(request.getCustomPrice());
+        }
+
+        return ResponseEntity.ok(reservationRepository.save(reservation));
     }
 
     @GetMapping

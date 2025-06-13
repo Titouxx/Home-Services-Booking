@@ -5,7 +5,7 @@ import "../styles/Calendar.css";
 
 const AVAILABLE_HOURS = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
 
-const MyCalendar = ({ selectedService }) => {
+const MyCalendar = ({ selectedService, addToBasket }) => {
     const [date, setDate] = useState(new Date());
     const [showModal, setShowModal] = useState(false);
     const [selectedHour, setSelectedHour] = useState("");
@@ -28,20 +28,33 @@ const MyCalendar = ({ selectedService }) => {
         const [hour, minute] = selectedHour.split(":");
         fullDate.setHours(hour, minute);
 
+        const payload = {
+            serviceId: selectedService.service?.id || selectedService.id,
+            appointmentDate: fullDate,
+        };
+
+        if (selectedService.isSubService) {
+            payload.customName = selectedService.name;
+            payload.customDuration = selectedService.durationMinutes;
+            payload.customPrice = selectedService.price;
+        }
+
         fetch("/api/reservations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                serviceId: selectedService.id,
-                appointmentDate: fullDate,
-            }),
+            body: JSON.stringify(payload),
         })
             .then((res) => {
                 if (!res.ok) throw new Error("Booking failed");
                 return res.json();
             })
-            .then(() => {
+            .then((data) => {
                 alert(`✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString()}`);
+                addToBasket({
+                    ...selectedService,
+                    date: fullDate,
+                    time: selectedHour,
+                });
                 setShowModal(false);
                 setSelectedHour("");
             })
@@ -50,6 +63,7 @@ const MyCalendar = ({ selectedService }) => {
                 console.error(err);
             });
     };
+
 
     return (
         <div className="calendar">
