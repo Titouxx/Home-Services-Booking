@@ -7,6 +7,8 @@ import Layout from "./Layout";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 
+const AVAILABLE_HOURS = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
+
 export function ProviderHomePage() {
     const [services, setServices] = useState([]);
     const [subServices, setSubServices] = useState([]);
@@ -17,6 +19,7 @@ export function ProviderHomePage() {
     const [selectedServiceNames, setSelectedServiceNames] = useState([]);
     const [selectedServiceForAvailability, setSelectedServiceForAvailability] = useState("");
     const [showServiceSelector, setShowServiceSelector] = useState(false);
+    const [selectedTime, setSelectedTime] = useState("");
 
     const user = JSON.parse(localStorage.getItem("user"));
     const providerId = user?.id;
@@ -89,17 +92,26 @@ export function ProviderHomePage() {
     };
 
     const handleAddTimeSlot = async () => {
-        const serviceName = selectedServices.length === 1
-            ? selectedServices[0]
+        const serviceName = selectedServiceNames.length === 1
+            ? selectedServiceNames[0]
             : selectedServiceForAvailability;
 
         if (!serviceName) {
             alert("Please select a service.");
             return;
         }
+        if (!selectedTime) {
+            alert("Please select a time.");
+            return;
+        }
 
-        const dateStr = selectedDate.toISOString().slice(0, 19);
-        if (timeSlots.some(slot => slot.availableDate.startsWith(dateStr.slice(0, 10)) && slot.serviceName === serviceName)) {
+        // Combine date and time
+        const date = new Date(selectedDate);
+        const [hour, minute] = selectedTime.split(":");
+        date.setHours(parseInt(hour, 10), parseInt(minute, 10), 0, 0);
+        const dateStr = date.toISOString().slice(0, 19);
+
+        if (timeSlots.some(slot => slot.availableDate.startsWith(dateStr.slice(0, 16)) && slot.serviceName === serviceName)) {
             alert("This time slot for this service is already added.");
             return;
         }
@@ -111,12 +123,12 @@ export function ProviderHomePage() {
                 body: JSON.stringify({ providerId, date: dateStr, serviceName }),
             });
             if (!res.ok) throw new Error("Failed to add time slot");
-            // Re-fetch availabilities from the backend
             fetch(`/api/provider/availability?providerId=${providerId}`)
                 .then((res) => res.json())
                 .then(setTimeSlots)
                 .catch(() => {});
-            alert(`Time slot added for ${selectedDate.toLocaleDateString()} (${serviceName})`);
+            alert(`Time slot added for ${date.toLocaleString()} (${serviceName})`);
+            setSelectedTime(""); // Reset after adding
         } catch (err) {
             alert("❌ Error: " + err.message);
         }
@@ -242,13 +254,28 @@ export function ProviderHomePage() {
                             }
                             disabled={calendarDisabled}
                         />
+                        <div style={{ margin: "15px 0" }}>
+                            <label style={{ fontWeight: 500, color: "#4B6000" }}>Select a time:</label>
+                            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
+                                {AVAILABLE_HOURS.map((hour) => (
+                                    <button
+                                        key={hour}
+                                        type="button"
+                                        className={`provider-tag ${selectedTime === hour ? "selected" : ""}`}
+                                        onClick={() => setSelectedTime(hour)}
+                                    >
+                                        {hour}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                         <button
                             onClick={handleAddTimeSlot}
                             className="provider-btn"
                             style={{ marginTop: 18 }}
-                            disabled={calendarDisabled}
+                            disabled={calendarDisabled || !selectedTime}
                         >
-                            Add Slot for {selectedDate.toLocaleDateString()}
+                            Add Slot for {selectedDate.toLocaleDateString()} {selectedTime && `at ${selectedTime}`}
                         </button>
                     </div>
                 </aside>
