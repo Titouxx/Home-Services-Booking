@@ -1,0 +1,57 @@
+.book-button {
+  background: #4B6000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.book-button:hover {
+  background: #3a4c00;
+}
+
+.subservice-card {
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #f9fce8;
+  max-width: 400px;
+  max-height: 400px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.subservice-card.selected {
+  border: 2px solid #4B6000;
+  box-shadow: 0 4px 12px rgba(75, 96, 0, 0.13);
+}
+
+.subservice-description {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #4B6000;
+  margin-top: 0.7rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: transparent;
+  padding: 25px;
+  border-radius: 12px;
+  width: 320px;
+} 

@@ -35,4 +35,14 @@ public class SubServiceController {
 
         return ResponseEntity.ok(subs);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<SubService>> getAllSubServices(HttpSession session) {
+        Boolean loggedIn = (Boolean) session.getAttribute("logged_in");
+        if (loggedIn == null || !loggedIn) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Non connecté");
+        }
+        List<SubService> subs = repository.findAll();
+        return ResponseEntity.ok(subs);
+    }
 }

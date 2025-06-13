@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
+import Footer from "./Footer";
 import "../styles/BasketPage.css";
 
 export function BasketPage() {
@@ -168,6 +169,7 @@ export function BasketPage() {
           )}
         </section>
       </main>
+      <Footer />
     </Layout>
   );
 }
