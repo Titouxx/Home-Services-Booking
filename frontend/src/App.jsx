@@ -9,6 +9,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { BasketPage } from "./components/BasketPage.jsx";
 import { ProviderHomePage } from "./components/ProviderHomePage";
 import AboutPage from "./components/AboutPage";
+import MyAppointments from "./components/MyAppointments";
+import MessagingPage from "./components/MessagingPage";
+import ProviderReviewPage from "./components/ProviderReviewPage";
+
+
 
 function App() {
   return (
@@ -52,6 +57,28 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route 
+          path="/my-appointments" 
+          element={
+            <MyAppointments />
+          } 
+        />
+
+        <Route
+          path="/messages" 
+          element={
+            <MessagingPage />
+          } 
+        />
+
+        <Route 
+          path="/provider/:providerId/reviews" 
+          element={
+            <ProviderReviewPage />
+          } 
+        />
+
+
       </Routes>
     </BrowserRouter>
   );
