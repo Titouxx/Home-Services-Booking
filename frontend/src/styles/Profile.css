@@ -1,0 +1,65 @@
+/* src/styles/Profile.css */
+.profile-container {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: #f7fbea;
+    border-radius: 0.75rem;
+    font-family: Arial, sans-serif;
+}
+.profile-container h2 {
+    color: #4B6000;
+    margin-bottom: 1rem;
+    font-family: Georgia, serif;
+}
+.profile-container p {
+    margin: 0.75rem 0;
+    font-size: 1rem;
+}
+.profile-container {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: #f7fbea;
+    border-radius: 0.75rem;
+}
+.profile-container h2 {
+    color: #4B6000;
+    margin-bottom: 1.5rem;
+    font-family: Georgia, serif;
+}
+.profile-container p {
+    margin-bottom: 1rem;
+}
+.edit-button,
+.save-button,
+.cancel-button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+.edit-button {
+    background: #4B6000;
+    color: white;
+}
+.cancel-button {
+    background: #ccc;
+    margin-left: 0.5rem;
+}
+.profile-form label {
+    display: block;
+    margin-bottom: 1rem;
+}
+.profile-form input {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+}
+.profile-form-buttons {
+    display: flex;
+    justify-content: flex-end;
+}

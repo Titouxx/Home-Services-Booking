@@ -1,3 +1,4 @@
+// src/main/java/com/planity/homeservices/controller/UserController.java
 package com.planity.homeservices.controller;
 
 import com.planity.homeservices.model.User;
@@ -22,18 +23,19 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody Map<String, String> body) {
         String username = body.get("username");
         String password = body.get("password");
-        String status = body.get("status");
+        String status   = body.get("status");
 
         try {
             User user = userService.registerUser(username, password, status);
-            return ResponseEntity.ok().body("User registered: " + user.getUsername());
+            return ResponseEntity.ok("User registered: " + user.getUsername());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> body, HttpSession session) {
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> body,
+                                       HttpSession session) {
         String username = body.get("username");
         String password = body.get("password");
 
@@ -61,5 +63,30 @@ public class UserController {
         } else {
             return ResponseEntity.status(401).body("Not logged in");
         }
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<?> updateMe(@RequestBody Map<String, Object> body,
+                                      HttpSession session) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return ResponseEntity.status(401).body("Not logged in");
+        }
+
+        String firstName = (String) body.get("firstName");
+        String lastName  = (String) body.get("lastName");
+        Integer age      = body.get("age") != null
+                ? Integer.valueOf(body.get("age").toString())
+                : null;
+        String email     = (String) body.get("email");
+        String password  = (String) body.get("password");
+
+        User updated = userService.updateProfile(
+                sessionUser.getId(),
+                firstName, lastName, age, email, password
+        );
+
+        session.setAttribute("user", updated);
+        return ResponseEntity.ok(updated);
     }
 }
