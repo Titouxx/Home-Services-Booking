@@ -1,0 +1,33 @@
+.provider-main {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.provider-section {
+    flex: 1;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.save-button {
+    margin-top: 15px;
+    background-color: #4B6000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.provider-calendar {
+    background: #f7fbea;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+}

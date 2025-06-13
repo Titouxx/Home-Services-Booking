@@ -1,0 +1,31 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+.logo {
+    color: #4b6000;
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: Georgia, serif;
+}
+
+.header-nav a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #4b6000;
+    font-weight: bold;
+}
+
+.basket-button {
+    background: #4b6000;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}

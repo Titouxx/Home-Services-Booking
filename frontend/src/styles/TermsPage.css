@@ -1,0 +1,71 @@
+/* src/styles/TermsPage.css */
+
+.terms-container {
+    font-family: 'Arial', sans-serif;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    color: #333;
+}
+
+.terms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 2rem;
+}
+
+.terms-logo-link {
+    text-decoration: none;
+    color: #4B6000;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.terms-title {
+    color: #4B6000;
+    margin-bottom: 1.5rem;
+    font-size: 28px;
+}
+
+.terms-section-title {
+    color: #4B6000;
+    margin: 1.5rem 0 1rem 0;
+    font-size: 20px;
+}
+
+.terms-paragraph {
+    margin-bottom: 1rem;
+}
+
+.terms-last-updated {
+    margin-top: 2rem;
+    font-style: italic;
+    color: #666;
+}
+
+.terms-footer {
+    margin-top: 50px;
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #eee;
+}
+
+.terms-back-link {
+    color: #4B6000;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #4B6000;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.terms-back-link:hover {
+    background-color: #4B6000;
+    color: white;
+}

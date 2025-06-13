@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Calendar.css";
+import "../styles/ProviderHomePage.css";
+import Layout from "./Layout";
 
 export function ProviderHomePage() {
     const [services, setServices] = useState([]);
@@ -37,20 +39,11 @@ export function ProviderHomePage() {
     };
 
     return (
-        <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-            <header style={headerStyle}>
-                <h1 style={{ color: "#4B6000" }}>PLANITY</h1>
-                <nav>
-                    <a href="/about" style={linkStyle}>Who we are</a>
-                    <a href="/profile" style={linkStyle}>My profile</a>
-                    <a href="/" style={linkStyle}>User View</a>
-                </nav>
-            </header>
-
-            <main style={{ display: "flex", gap: "40px", marginTop: "30px" }}>
+        <Layout>
+            <main className="provider-main">
                 {/* Left column: Declare services */}
-                <section style={{ flex: 1 }}>
-                    <h2 style={sectionTitle}>Declare Your Services</h2>
+                <section className="provider-section">
+                    <h2 className="section-title">Declare Your Services</h2>
                     {services.map((service) => (
                         <div key={service.id}>
                             <label>
@@ -63,14 +56,14 @@ export function ProviderHomePage() {
                             </label>
                         </div>
                     ))}
-                    <button onClick={handleSaveServices} style={saveButtonStyle}>
+                    <button onClick={handleSaveServices} className="save-button">
                         Save Services
                     </button>
                 </section>
 
                 {/* Right column: Calendar */}
-                <aside style={calendarCard}>
-                    <h2 style={sectionTitle}>Set Your Availability</h2>
+                <aside className="provider-calendar">
+                    <h2 className="section-title">Set Your Availability</h2>
                     <Calendar
                         onChange={setSelectedDate}
                         value={selectedDate}
@@ -82,47 +75,7 @@ export function ProviderHomePage() {
                     </button>
                 </aside>
             </main>
+        </Layout>
 
-            <footer style={{ marginTop: "50px", textAlign: "center", fontSize: "12px", color: "#666" }}>
-                © All rights reserved
-            </footer>
-        </div>
     );
 }
-
-// === Styles ===
-const headerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-};
-
-const linkStyle = {
-    marginRight: "15px",
-    textDecoration: "none",
-    color: "#4B6000",
-    fontWeight: "bold",
-};
-
-const sectionTitle = {
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-    marginBottom: "15px",
-};
-
-const calendarCard = {
-    background: "#f7fbea",
-    padding: "20px",
-    borderRadius: "10px",
-    width: "320px",
-};
-
-const saveButtonStyle = {
-    marginTop: "15px",
-    backgroundColor: "#4B6000",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    cursor: "pointer",
-};
