@@ -1,33 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MyCalendar from "./Calendar";
 import Footer from "./Footer";
 
 export function HomePage() {
   const [services, setServices] = useState([]);
-  const [subServices, setSubServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
-  const [basketItems, setBasketItems] = useState(() => {
+  const [basketItems] = useState(() => {
     const saved = localStorage.getItem("basketItems");
     return saved ? JSON.parse(saved) : [];
   });
-  const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/api/services")
       .then((res) => res.json())
       .then((data) => setServices(data))
       .catch((err) => console.error("Failed to fetch services:", err));
-
-    fetch("/api/subservices/all")
-      .then((res) => res.json())
-      .then((data) => setSubServices(data))
-      .catch((err) => console.error("Failed to fetch subservices:", err));
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    localStorage.setItem("basketItems", JSON.stringify(basketItems));
+  }, [basketItems]);
 
   const handleCardClick = (e, service) => {
     if (e.target.closest("button")) return;
@@ -37,14 +32,6 @@ export function HomePage() {
   const handleBasketClick = () => {
     navigate("/basket");
   };
-
-  const matchingServices = services.filter((service) =>
-    service.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const matchingSubServices = subServices.filter((sub) =>
-    sub.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
@@ -82,7 +69,6 @@ export function HomePage() {
             <h2 style={sectionTitleH2}>Our Services</h2>
             <hr style={sectionTitleHr} />
           </div>
-          <hr />
 
           {services.map((service) => (
             <div
@@ -116,11 +102,8 @@ export function HomePage() {
           ))}
         </section>
 
-        <aside className="calendar-card">
-          <MyCalendar
-            selectedService={selectedService}
-            addToBasket={addToBasket}
-          />
+        <aside style={calendarCard}>
+          <MyCalendar selectedService={selectedService} />
         </aside>
       </main>
 
