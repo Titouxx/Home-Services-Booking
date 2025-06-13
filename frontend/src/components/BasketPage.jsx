@@ -1,28 +1,113 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
-import "../styles/BasketPage.css"; // ✅ Import CSS
+import "../styles/BasketPage.css";
 
 export function BasketPage() {
   const [reservations, setReservations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/reservations")
-      .then((res) => res.json())
-      .then((data) => setReservations(data))
-      .catch((err) => console.error("Failed to fetch reservations:", err));
+    const fetchReservations = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/reservations");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setReservations(data);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch reservations:", err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReservations();
   }, []);
 
-  const handleRemoveItem = (id) => {
-    setReservations(reservations.filter((item) => item.id !== id));
+  const handleRemoveItem = async (id) => {
+    if (!window.confirm("Are you sure you want to remove this booking?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/reservations/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete reservation");
+      }
+
+      setReservations(reservations.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error("Failed to remove reservation:", err);
+      alert("Failed to remove reservation. Please try again.");
+    }
   };
 
   const calculateTotal = () => {
     return reservations.reduce(
-      (total, item) => total + (item.service?.price || 0),
+      (total, item) => total + (item.customPrice || item.service?.price || 0),
       0
     );
   };
+
+  const handleCheckout = () => {
+    if (reservations.length === 0) {
+      alert("Your basket is empty");
+      return;
+    }
+    navigate("/checkout");
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <main className="basket-container">
+          <div className="loading-spinner">Loading your bookings...</div>
+        </main>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <main className="basket-container">
+          <div className="error-message">
+            Error loading bookings: {error}
+            <button onClick={() => window.location.reload()}>Retry</button>
+          </div>
+        </main>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -47,24 +132,20 @@ export function BasketPage() {
                   <div>
                     <h3>🔧 {item.customName || item.service?.name}</h3>
                     <p style={{ color: "#4B6000" }}>
-                      {item.customPrice ?? item.service?.price}€ /
+                      {item.customPrice ?? item.service?.price}€ /{" "}
                       {item.customDuration ?? item.service?.durationMinutes}min
                     </p>
 
                     <p>
-                      <strong>Date:</strong>{" "}
-                      {new Date(item.appointmentDate).toLocaleDateString()}
+                      <strong>Date:</strong> {formatDate(item.appointmentDate)}
                       <br />
-                      <strong>Time:</strong>{" "}
-                      {new Date(item.appointmentDate).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      <strong>Time:</strong> {formatTime(item.appointmentDate)}
                     </p>
                   </div>
                   <button
                     onClick={() => handleRemoveItem(item.id)}
                     className="remove-button"
+                    aria-label="Remove booking"
                   >
                     Remove
                   </button>
@@ -79,7 +160,9 @@ export function BasketPage() {
                     {reservations.length !== 1 ? "s" : ""}
                   </p>
                 </div>
-                <button className="checkout-button">Proceed to Checkout</button>
+                <button className="checkout-button" onClick={handleCheckout}>
+                  Proceed to Checkout
+                </button>
               </div>
             </>
           )}

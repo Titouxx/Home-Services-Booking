@@ -5,9 +5,12 @@ import com.planity.homeservices.model.Reservation;
 import com.planity.homeservices.model.Service;
 import com.planity.homeservices.repository.ReservationRepository;
 import com.planity.homeservices.repository.ServiceRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -46,5 +49,22 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<?> getAllReservations() {
         return ResponseEntity.ok(reservationRepository.findAll());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
+        try {
+            if (!reservationRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Reservation not found"));
+            }
+            
+            reservationRepository.deleteById(id);
+            
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to delete reservation: " + e.getMessage()));
+        }
     }
 }

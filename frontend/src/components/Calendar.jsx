@@ -5,7 +5,7 @@ import "../styles/Calendar.css";
 
 const AVAILABLE_HOURS = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
 
-const MyCalendar = ({ selectedService, addToBasket }) => {
+const MyCalendar = ({ selectedService, onAddToBasket }) => {
   const [date, setDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
   const [selectedHour, setSelectedHour] = useState("");
@@ -18,52 +18,61 @@ const MyCalendar = ({ selectedService, addToBasket }) => {
     setShowModal(true);
   };
 
-  const confirmBooking = () => {
+  const confirmBooking = async () => {
     if (!selectedHour) {
       alert("❗ Please select a time slot.");
       return;
     }
 
-    const fullDate = new Date(date);
-    const [hour, minute] = selectedHour.split(":");
-    fullDate.setHours(hour, minute);
+    try {
+      const fullDate = new Date(date);
+      const [hour, minute] = selectedHour.split(":");
+      fullDate.setHours(parseInt(hour, 10), parseInt(minute, 10));
 
-    const payload = {
-      serviceId: selectedService.service?.id || selectedService.id,
-      appointmentDate: fullDate,
-    };
+      const payload = {
+        serviceId: selectedService.service?.id || selectedService.id,
+        appointmentDate: fullDate.toISOString(),
+      };
 
-    if (selectedService.isSubService) {
-      payload.customName = selectedService.name;
-      payload.customDuration = selectedService.durationMinutes;
-      payload.customPrice = selectedService.price;
-    }
+      if (selectedService.isSubService) {
+        payload.customName = selectedService.name;
+        payload.customDuration = selectedService.durationMinutes;
+        payload.customPrice = selectedService.price;
+      }
 
-    fetch("/api/reservations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Booking failed");
-        return res.json();
-      })
-      .then(() => {
-        alert(
-          `✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString()}`
-        );
-        addToBasket({
+      const response = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Booking failed");
+      }
+
+      // Parse response but don't need to store if not used
+      await response.json();
+
+      alert(
+        `✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString()}`
+      );
+
+      // Ensure addToBasket is properly passed and is a function
+      if (typeof onAddToBasket === "function") {
+        onAddToBasket({
           ...selectedService,
           date: fullDate,
           time: selectedHour,
         });
-        setShowModal(false);
-        setSelectedHour("");
-      })
-      .catch((err) => {
-        alert("❌ Booking failed. Try again.");
-        console.error(err);
-      });
+      }
+
+      setShowModal(false);
+      setSelectedHour("");
+    } catch (err) {
+      console.error("Booking error:", err);
+      alert(`❌ Booking failed: ${err.message}`);
+    }
   };
 
   return (

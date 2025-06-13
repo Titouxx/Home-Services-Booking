@@ -6,7 +6,7 @@ import Footer from "./Footer";
 export function HomePage() {
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
-  const [basketItems] = useState(() => {
+  const [basketItems, setBasketItems] = useState(() => {
     const saved = localStorage.getItem("basketItems");
     return saved ? JSON.parse(saved) : [];
   });
@@ -31,6 +31,20 @@ export function HomePage() {
 
   const handleBasketClick = () => {
     navigate("/basket");
+  };
+
+  const handleAddToBasket = (newItem) => {
+    setBasketItems((prev) => {
+      const updated = [
+        ...prev,
+        {
+          ...newItem,
+          id: Date.now(),
+        },
+      ];
+      localStorage.setItem("basketItems", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -103,7 +117,10 @@ export function HomePage() {
         </section>
 
         <aside style={calendarCard}>
-          <MyCalendar selectedService={selectedService} />
+          <MyCalendar
+            selectedService={selectedService}
+            onAddToBasket={handleAddToBasket}
+          />
         </aside>
       </main>
 
