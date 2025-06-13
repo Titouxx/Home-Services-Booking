@@ -30,6 +30,7 @@ public class UserControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testLoginSuccess() {
         User mockUser = new User(1L, "testuser", "pass", "client");
@@ -43,6 +44,7 @@ public class UserControllerTest {
         verify(session).setAttribute("user", mockUser);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testLoginFailure() {
         when(userService.authenticate("invalid", "wrong")).thenReturn(Optional.empty());
@@ -53,6 +55,7 @@ public class UserControllerTest {
         assertEquals(401, response.getStatusCodeValue());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testLogout() {
         HttpSession session = mock(HttpSession.class);
@@ -63,6 +66,7 @@ public class UserControllerTest {
         verify(session).invalidate();
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testMeEndpoint_whenLoggedIn() {
         HttpSession session = mock(HttpSession.class);
@@ -77,6 +81,7 @@ public class UserControllerTest {
         assertEquals(mockUser, response.getBody());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testMeEndpoint_whenNotLoggedIn() {
         HttpSession session = mock(HttpSession.class);

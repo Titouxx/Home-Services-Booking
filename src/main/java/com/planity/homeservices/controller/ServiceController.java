@@ -18,7 +18,6 @@ public class ServiceController {
 
     private final ServiceRepository repository;
 
-    @Autowired
     public ServiceController(ServiceRepository repository) {
         this.repository = repository;
     }

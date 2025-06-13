@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -22,20 +24,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 1) Activer la prise en charge de CORS
-                .cors().and()
+                .cors(withDefaults())
 
                 // 2) Désactiver CSRF (fetch + cookies)
                 .csrf(csrf -> csrf.disable())
 
                 // 3) Rendre tous les endpoints accessibles (votre app gère l’auth côté front)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                 )
 
                 // 4) Activer le logout standard (POST /logout)
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .permitAll()
+                                .logoutUrl("/logout")
+                                .permitAll()
                 );
 
         return http.build();
