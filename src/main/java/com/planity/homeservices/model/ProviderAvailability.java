@@ -12,6 +12,7 @@ public class ProviderAvailability {
 
     private Long providerId;
     private LocalDateTime availableDate;
+    private String serviceName;
 
     // Getters/setters
     public Long getId() { return id; }
@@ -22,4 +23,12 @@ public class ProviderAvailability {
 
     public LocalDateTime getAvailableDate() { return availableDate; }
     public void setAvailableDate(LocalDateTime availableDate) { this.availableDate = availableDate; }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 } 

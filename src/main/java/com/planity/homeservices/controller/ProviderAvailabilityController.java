@@ -29,6 +29,7 @@ public class ProviderAvailabilityController {
     public ResponseEntity<?> addAvailability(@RequestBody Map<String, Object> body) {
         Long providerId = Long.valueOf(body.get("providerId").toString());
         String dateStr = body.get("date").toString();
+        String serviceName = body.get("serviceName").toString();
         // Enlève le Z si présent
         if (dateStr.endsWith("Z")) {
             dateStr = dateStr.replace("Z", "");
@@ -38,6 +39,7 @@ public class ProviderAvailabilityController {
         ProviderAvailability pa = new ProviderAvailability();
         pa.setProviderId(providerId);
         pa.setAvailableDate(date);
+        pa.setServiceName(serviceName);
 
         providerAvailabilityRepository.save(pa);
         return ResponseEntity.ok().build();
