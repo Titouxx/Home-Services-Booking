@@ -37,3 +37,4 @@ tree.txt
 
 **/.DS_Store
 **/node_modules/
+/src/main/resources/static/assets
