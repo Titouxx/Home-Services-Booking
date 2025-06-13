@@ -61,7 +61,6 @@ export default function Register() {
                     >
                         <option value="client">Client</option>
                         <option value="prestataire">Prestataire</option>
-                        <option value="administrateur">Administrateur</option>
                     </select>
                     <button className="auth-button" type="submit">
                         S’inscrire
