@@ -5,6 +5,7 @@ import "react-calendar/dist/Calendar.css";
 import "../styles/Calendar.css";
 import "../styles/ProviderHomePage.css";
 import Layout from "./Layout";
+import Footer from "./Footer";
 
 export function ProviderHomePage() {
     const [services, setServices] = useState([]);
@@ -75,7 +76,8 @@ export function ProviderHomePage() {
                     </button>
                 </aside>
             </main>
-        </Layout>
+            <Footer />
+            </Layout>
 
     );
 }
