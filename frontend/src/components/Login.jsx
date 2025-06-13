@@ -25,6 +25,12 @@ export default function Login() {
                 body: JSON.stringify({ username, password }),
             });
             if (resp.ok) {
+                // Récupère l'utilisateur connecté et stocke-le
+                const meResp = await fetch("/api/auth/me", { credentials: "include" });
+                if (meResp.ok) {
+                    const user = await meResp.json();
+                    localStorage.setItem("user", JSON.stringify(user));
+                }
                 navigate("/");
             } else {
                 alert("Identifiants invalides");
@@ -44,7 +50,7 @@ export default function Login() {
                     <input
                         className="auth-input"
                         type="text"
-                        placeholder="Nom d’utilisateur"
+                        placeholder="Nom d'utilisateur"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required

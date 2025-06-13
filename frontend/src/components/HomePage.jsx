@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MyCalendar from "./Calendar";
 import Footer from "./Footer";
+import Layout from "./Layout";
 import "../styles/HomePage.css";
 
 export function HomePage() {
@@ -63,7 +64,6 @@ export function HomePage() {
             customPrice: item.price,
             customDuration: item.durationMinutes,
             appointmentDate: item.date || null,
-            // add more fields if needed
           },
         ];
         localStorage.setItem("basketItems", JSON.stringify(updated));
@@ -93,27 +93,7 @@ export function HomePage() {
   );
 
   return (
-    <div>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px" }}>
-        <Link to="/" style={{ color: "#4B6000", textDecoration: "none", fontSize: "2rem", fontWeight: "bold", fontFamily: "Georgia, serif" }}>
-          PLANITY
-        </Link>
-        <nav>
-          <Link to="/about" style={{ marginRight: "15px", textDecoration: "none", color: "#4B6000", fontWeight: "bold" }}>
-            Who we are
-          </Link>
-          <Link to="/profile" style={{ marginRight: "15px", textDecoration: "none", color: "#4B6000", fontWeight: "bold" }}>
-            My profile
-          </Link>
-          <Link to="/provider-dashboard" style={{ marginRight: "15px", textDecoration: "none", color: "#4B6000", fontWeight: "bold" }}>
-            Provider Dashboard
-          </Link>
-          <button onClick={handleBasketClick} style={{ background: "#4B6000", color: "white", border: "none", padding: "6px 12px", borderRadius: "5px", cursor: "pointer" }}>
-            Basket ({basketItems.length})
-          </button>
-        </nav>
-      </header>
-
+    <Layout>
       <main className="home-main">
         <section className="service-list">
           <div className="section-title-with-search">
@@ -205,8 +185,7 @@ export function HomePage() {
           />
         </aside>
       </main>
-
       <Footer />
-    </div>
+    </Layout>
   );
 }
