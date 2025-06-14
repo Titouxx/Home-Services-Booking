@@ -39,12 +39,12 @@ export default function Login() {
         <div className="auth-page">
             <Header />
             <div className="auth-container">
-                <h2 className="auth-title">Connexion</h2>
+                <h2 className="auth-title">Log In</h2>
                 <form onSubmit={handleLogin} className="auth-form">
                     <input
                         className="auth-input"
                         type="text"
-                        placeholder="Nom d’utilisateur"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
@@ -52,7 +52,7 @@ export default function Login() {
                     <input
                         className="auth-input"
                         type="password"
-                        placeholder="Mot de passe"
+                        placeholder="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -62,9 +62,9 @@ export default function Login() {
                     </button>
                 </form>
                 <p className="auth-switch">
-                    Pas encore inscrit ?{" "}
+                    Not registered yet ?{" "}
                     <span className="auth-link" onClick={() => navigate("/register")}>
-            Créez un compte
+            Register
           </span>
                 </p>
                 {/* --- nouveau lien Terms en bas --- */}
