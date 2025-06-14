@@ -60,7 +60,7 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
       await response.json();
 
       alert(
-        `✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString()}`
+        `✅ Booked "${selectedService.name}" on ${fullDate.toLocaleString('en-GB', { timeZone: 'UTC' })}`
       );
 
       // Ensure addToBasket is properly passed and is a function
@@ -139,7 +139,7 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
         onClick={handleBook}
         disabled={noAvailabilities}
       >
-        Book on {date.toLocaleDateString()}
+        Book on {date.toLocaleDateString('en-GB', { timeZone: 'UTC' })}
       </button>
       {noAvailabilities && (
         <div style={{ color: '#b00', marginTop: 10, fontWeight: 500 }}>

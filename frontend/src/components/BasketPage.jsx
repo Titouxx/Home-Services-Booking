@@ -78,18 +78,20 @@ export function BasketPage() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("en-GB", {
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: "UTC"
     });
   };
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
+    return date.toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "UTC"
     });
   };
 

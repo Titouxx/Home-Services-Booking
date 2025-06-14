@@ -109,7 +109,8 @@ export function ProviderHomePage() {
         const date = new Date(selectedDate);
         const [hour, minute] = selectedTime.split(":");
         date.setHours(parseInt(hour, 10), parseInt(minute, 10), 0, 0);
-        const dateStr = date.toISOString().slice(0, 19);
+        const pad = n => n.toString().padStart(2, '0');
+        const dateStr = `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
 
         if (timeSlots.some(slot => slot.availableDate.startsWith(dateStr.slice(0, 16)) && slot.serviceName === serviceName)) {
             alert("This time slot for this service is already added.");
@@ -171,7 +172,7 @@ export function ProviderHomePage() {
                                         <ul style={{ margin: 0, paddingLeft: 18 }}>
                                             {slots.map(slot => (
                                                 <li key={slot.availableDate} style={{ fontSize: "0.98em" }}>
-                                                    {new Date(slot.availableDate).toLocaleString()}
+                                                    {new Date(slot.availableDate.replace(' ', 'T')).toLocaleString()}
                                                 </li>
                                             ))}
                                         </ul>
