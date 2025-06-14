@@ -169,13 +169,20 @@ export function BasketPage() {
                           <strong>Time:</strong> {formatTime(item.appointmentDate)}
                         </p>
                       </div>
-                      <button
-                        onClick={() => handleRemoveItem(item.id)}
-                        className="remove-button"
-                        aria-label="Remove booking"
-                      >
-                        Remove
-                      </button>
+                        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                        <button
+                            onClick={() => navigate(`/message?providerId=${item.providerId}`)}
+                            className="message-button"
+                        >
+                          Message
+                        </button>
+                        <button
+                            onClick={() => handleRemoveItem(item.id)}
+                            className="remove-button"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
