@@ -4,6 +4,17 @@ import Layout from "./Layout";
 import Footer from "./Footer";
 import "../styles/BasketPage.css";
 
+// Helper to parse 'YYYY-MM-DD HH:mm:ss' or 'YYYY-MM-DDTHH:mm:ss' as local time
+function parseLocalDateTime(str) {
+  if (!str) return null;
+  let s = str.replace('T', ' ');
+  const [datePart, timePart] = s.split(' ');
+  if (!datePart || !timePart) return new Date(str); // fallback
+  const [year, month, day] = datePart.split('-').map(Number);
+  const [hour, minute, second] = timePart.split(':').map(Number);
+  return new Date(year, month - 1, day, hour, minute, second);
+}
+
 export function BasketPage() {
   const [reservations, setReservations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -77,22 +88,20 @@ export function BasketPage() {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB", {
+    const date = parseLocalDateTime(dateString);
+    return date ? date.toLocaleDateString("fr-FR", {
       year: "numeric",
       month: "long",
-      day: "numeric",
-      timeZone: "UTC"
-    });
+      day: "numeric"
+    }) : "";
   };
 
   const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString("en-GB", {
+    const date = parseLocalDateTime(dateString);
+    return date ? date.toLocaleTimeString("fr-FR", {
       hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "UTC"
-    });
+      minute: "2-digit"
+    }) : "";
   };
 
   // Group reservations by service/subservice name

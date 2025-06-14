@@ -38,15 +38,17 @@ public class ReservationController {
             return ResponseEntity.badRequest().body("Service or user not found");
         }
 
-        if (reservationRepository.existsByServiceAndAppointmentDate(serviceOpt.get(), request.getAppointmentDate())) {
+        if (reservationRepository.existsByServiceAndAppointmentDateAndProviderId(serviceOpt.get(), request.getAppointmentDate(), request.getProviderId())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("This slot is already booked.");
+                    .body("This slot is already booked.");
         }
+
 
         Reservation reservation = new Reservation();
         reservation.setService(serviceOpt.get());
         reservation.setUser(userOpt.get());
         reservation.setAppointmentDate(request.getAppointmentDate());
+        reservation.setProviderId(request.getProviderId());
 
         if (request.getCustomName() != null) {
             reservation.setCustomName(request.getCustomName());

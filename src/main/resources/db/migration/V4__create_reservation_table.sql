@@ -5,5 +5,6 @@ CREATE TABLE reservation (
                              custom_name VARCHAR(255),
                              custom_duration INTEGER,
                              custom_price NUMERIC(10, 2),
-                             user_id BIGINT REFERENCES users(id)
+                             user_id BIGINT REFERENCES users(id),
+                             provider_id BIGINT  -- Added directly to the table
 );

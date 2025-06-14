@@ -10,6 +10,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Table(
+        name = "reservation",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"service_id", "appointmentDate", "providerId"})
+        }
+)
 public class Reservation {
 
     @Id
@@ -19,6 +25,7 @@ public class Reservation {
     private LocalDateTime appointmentDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
     @Column(name = "custom_name")
@@ -31,5 +38,12 @@ public class Reservation {
     private BigDecimal customPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "providerId", nullable = false)
+    private Long providerId;
+
+    public Long getProviderId() { return providerId; }
+    public void setProviderId(Long providerId) { this.providerId = providerId; }
 }

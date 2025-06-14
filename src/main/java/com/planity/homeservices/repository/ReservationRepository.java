@@ -10,4 +10,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserId(Long userId);
     boolean existsByServiceAndAppointmentDate(Service service, LocalDateTime appointmentDate);
     List<Reservation> findByServiceId(Long serviceId);
+
+    boolean existsByServiceAndAppointmentDateAndProviderId(
+            com.planity.homeservices.model.Service service,
+            java.time.LocalDateTime appointmentDate,
+            Long providerId
+    );
+
 }
