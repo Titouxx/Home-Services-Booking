@@ -49,4 +49,10 @@ public class ProviderAvailabilityController {
     public ResponseEntity<List<ProviderAvailability>> getByService(@RequestParam String serviceName) {
         return ResponseEntity.ok(providerAvailabilityRepository.findByServiceName(serviceName));
     }
+
+    @GetMapping("/availability/all")
+    public ResponseEntity<List<ProviderAvailability>> getAllAvailabilities() {
+        return ResponseEntity.ok(providerAvailabilityRepository.findAll());
+    }
+
 } 
