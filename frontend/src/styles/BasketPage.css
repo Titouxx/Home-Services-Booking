@@ -1,0 +1,14 @@
+.message-button {
+    background-color: #e9f7dc;       /* Light green background */
+    color: #4B6000;                  /* Dark green text */
+    padding: 6px 14px;
+    border-radius: 20px;            /* Rounded pill shape */
+    border: 1px solid #4B6000;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.message-button:hover {
+    background-color: #d2ecb8;       /* Slightly darker on hover */
+}

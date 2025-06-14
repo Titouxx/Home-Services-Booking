@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
+import Footer from "./Footer";
 import "../styles/BasketPage.css";
+
+// Helper to parse 'YYYY-MM-DD HH:mm:ss' or 'YYYY-MM-DDTHH:mm:ss' as local time
+function parseLocalDateTime(str) {
+  if (!str) return null;
+  let s = str.replace('T', ' ');
+  const [datePart, timePart] = s.split(' ');
+  if (!datePart || !timePart) return new Date(str); // fallback
+  const [year, month, day] = datePart.split('-').map(Number);
+  const [hour, minute, second] = timePart.split(':').map(Number);
+  return new Date(year, month - 1, day, hour, minute, second);
+}
 
 export function BasketPage() {
   const [reservations, setReservations] = useState([]);
@@ -13,7 +25,13 @@ export function BasketPage() {
     const fetchReservations = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/reservations");
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.id) {
+          setReservations([]);
+          setIsLoading(false);
+          return;
+        }
+        const response = await fetch(`/api/reservations/by-user/${user.id}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -70,21 +88,29 @@ export function BasketPage() {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    const date = parseLocalDateTime(dateString);
+    return date ? date.toLocaleDateString("fr-FR", {
       year: "numeric",
       month: "long",
-      day: "numeric",
-    });
+      day: "numeric"
+    }) : "";
   };
 
   const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
+    const date = parseLocalDateTime(dateString);
+    return date ? date.toLocaleTimeString("fr-FR", {
       hour: "2-digit",
-      minute: "2-digit",
-    });
+      minute: "2-digit"
+    }) : "";
   };
+
+  // Group reservations by service/subservice name
+  const groupedReservations = reservations.reduce((acc, item) => {
+    const name = item.customName || item.service?.name || "Other";
+    if (!acc[name]) acc[name] = [];
+    acc[name].push(item);
+    return acc;
+  }, {});
 
   if (isLoading) {
     return (
@@ -127,28 +153,38 @@ export function BasketPage() {
             </div>
           ) : (
             <>
-              {reservations.map((item) => (
-                <div key={item.id} className="basket-item">
-                  <div>
-                    <h3>🔧 {item.customName || item.service?.name}</h3>
-                    <p style={{ color: "#4B6000" }}>
-                      {item.customPrice ?? item.service?.price}€ /{" "}
-                      {item.customDuration ?? item.service?.durationMinutes}min
-                    </p>
-
-                    <p>
-                      <strong>Date:</strong> {formatDate(item.appointmentDate)}
-                      <br />
-                      <strong>Time:</strong> {formatTime(item.appointmentDate)}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleRemoveItem(item.id)}
-                    className="remove-button"
-                    aria-label="Remove booking"
-                  >
-                    Remove
-                  </button>
+              {Object.entries(groupedReservations).map(([serviceName, items]) => (
+                <div key={serviceName} style={{ marginBottom: 24 }}>
+                  <h3 style={{ color: '#4B6000', marginBottom: 8 }}>🔧 {serviceName}</h3>
+                  {items.map(item => (
+                    <div key={item.id} className="basket-item">
+                      <div>
+                        <p style={{ color: "#4B6000" }}>
+                          {item.customPrice ?? item.service?.price}€ /{" "}
+                          {item.customDuration ?? item.service?.durationMinutes}min
+                        </p>
+                        <p>
+                          <strong>Date:</strong> {formatDate(item.appointmentDate)}
+                          <br />
+                          <strong>Time:</strong> {formatTime(item.appointmentDate)}
+                        </p>
+                      </div>
+                        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                        <button
+                            onClick={() => navigate(`/message?providerId=${item.providerId}`)}
+                            className="message-button"
+                        >
+                          Message
+                        </button>
+                        <button
+                            onClick={() => handleRemoveItem(item.id)}
+                            className="remove-button"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
 
@@ -168,6 +204,7 @@ export function BasketPage() {
           )}
         </section>
       </main>
+      <Footer />
     </Layout>
   );
 }

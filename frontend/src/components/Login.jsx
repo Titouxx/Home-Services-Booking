@@ -11,7 +11,16 @@ export default function Login() {
 
     useEffect(() => {
         fetch("/api/auth/me", { credentials: "include" })
-            .then((r) => r.ok && navigate("/"))
+            .then(async (r) => {
+                if (r.ok) {
+                    const user = await r.json();
+                    if (user.status === "prestataire") {
+                        navigate("/provider-dashboard");
+                    } else {
+                        navigate("/");
+                    }
+                }
+            })
             .catch(() => {});
     }, [navigate]);
 
@@ -25,7 +34,17 @@ export default function Login() {
                 body: JSON.stringify({ username, password }),
             });
             if (resp.ok) {
-                navigate("/");
+                // Récupère l'utilisateur connecté et stocke-le
+                const meResp = await fetch("/api/auth/me", { credentials: "include" });
+                if (meResp.ok) {
+                    const user = await meResp.json();
+                    localStorage.setItem("user", JSON.stringify(user));
+                    if (user.status === "prestataire") {
+                        navigate("/provider-dashboard");
+                    } else {
+                        navigate("/");
+                    }
+                }
             } else {
                 alert("Identifiants invalides");
             }
@@ -44,7 +63,7 @@ export default function Login() {
                     <input
                         className="auth-input"
                         type="text"
-                        placeholder="Nom d’utilisateur"
+                        placeholder="Nom d'utilisateur"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
