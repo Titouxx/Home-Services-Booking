@@ -38,6 +38,11 @@ public class ReservationController {
             return ResponseEntity.badRequest().body("Service or user not found");
         }
 
+        if (reservationRepository.existsByServiceAndAppointmentDate(serviceOpt.get(), request.getAppointmentDate())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("This slot is already booked.");
+        }
+
         Reservation reservation = new Reservation();
         reservation.setService(serviceOpt.get());
         reservation.setUser(userOpt.get());
@@ -77,5 +82,10 @@ public class ReservationController {
     @GetMapping("/by-user/{userId}")
     public ResponseEntity<?> getReservationsByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(reservationRepository.findByUserId(userId));
+    }
+
+    @GetMapping("/by-service/{serviceId}")
+    public ResponseEntity<?> getReservationsByService(@PathVariable Long serviceId) {
+        return ResponseEntity.ok(reservationRepository.findByServiceId(serviceId));
     }
 }

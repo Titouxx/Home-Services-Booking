@@ -14,7 +14,13 @@ export function BasketPage() {
     const fetchReservations = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/reservations");
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.id) {
+          setReservations([]);
+          setIsLoading(false);
+          return;
+        }
+        const response = await fetch(`/api/reservations/by-user/${user.id}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -87,6 +93,14 @@ export function BasketPage() {
     });
   };
 
+  // Group reservations by service/subservice name
+  const groupedReservations = reservations.reduce((acc, item) => {
+    const name = item.customName || item.service?.name || "Other";
+    if (!acc[name]) acc[name] = [];
+    acc[name].push(item);
+    return acc;
+  }, {});
+
   if (isLoading) {
     return (
       <Layout>
@@ -128,28 +142,31 @@ export function BasketPage() {
             </div>
           ) : (
             <>
-              {reservations.map((item) => (
-                <div key={item.id} className="basket-item">
-                  <div>
-                    <h3>🔧 {item.customName || item.service?.name}</h3>
-                    <p style={{ color: "#4B6000" }}>
-                      {item.customPrice ?? item.service?.price}€ /{" "}
-                      {item.customDuration ?? item.service?.durationMinutes}min
-                    </p>
-
-                    <p>
-                      <strong>Date:</strong> {formatDate(item.appointmentDate)}
-                      <br />
-                      <strong>Time:</strong> {formatTime(item.appointmentDate)}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleRemoveItem(item.id)}
-                    className="remove-button"
-                    aria-label="Remove booking"
-                  >
-                    Remove
-                  </button>
+              {Object.entries(groupedReservations).map(([serviceName, items]) => (
+                <div key={serviceName} style={{ marginBottom: 24 }}>
+                  <h3 style={{ color: '#4B6000', marginBottom: 8 }}>🔧 {serviceName}</h3>
+                  {items.map(item => (
+                    <div key={item.id} className="basket-item">
+                      <div>
+                        <p style={{ color: "#4B6000" }}>
+                          {item.customPrice ?? item.service?.price}€ /{" "}
+                          {item.customDuration ?? item.service?.durationMinutes}min
+                        </p>
+                        <p>
+                          <strong>Date:</strong> {formatDate(item.appointmentDate)}
+                          <br />
+                          <strong>Time:</strong> {formatTime(item.appointmentDate)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveItem(item.id)}
+                        className="remove-button"
+                        aria-label="Remove booking"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
                 </div>
               ))}
 

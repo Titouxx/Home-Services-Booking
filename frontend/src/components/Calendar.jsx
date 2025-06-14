@@ -10,6 +10,7 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedHour, setSelectedHour] = useState("");
   const [availabilities, setAvailabilities] = useState([]);
+  const [reservations, setReservations] = useState([]);
 
   const handleBook = () => {
     if (!selectedService) {
@@ -84,10 +85,19 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
       fetch(`/api/provider/availability/by-service?serviceName=${encodeURIComponent(selectedService.name)}`)
         .then(res => res.json())
         .then(data => setAvailabilities(Array.isArray(data) ? data : []));
+      fetch(`/api/reservations/by-service/${selectedService.id}`)
+        .then(res => res.json())
+        .then(data => setReservations(Array.isArray(data) ? data : []));
     } else {
       setAvailabilities([]);
+      setReservations([]);
     }
   }, [selectedService]);
+
+  // Get booked times for the selected date
+  const bookedTimes = reservations
+    .filter(r => new Date(r.appointmentDate).toDateString() === date.toDateString())
+    .map(r => new Date(r.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
 
   // Get available times for the selected date
   const availableTimesForDate = availabilities
@@ -95,7 +105,8 @@ const MyCalendar = ({ selectedService, onAddToBasket }) => {
     .map(a => {
       const d = new Date(a.availableDate);
       return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    });
+    })
+    .filter(time => !bookedTimes.includes(time));
 
   const noAvailabilities = selectedService && availabilities.length === 0;
   const noTimesForDate = selectedService && availableTimesForDate.length === 0;

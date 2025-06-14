@@ -159,6 +159,7 @@ export function ProviderHomePage() {
                     <div className="provider-section-title" style={{ fontSize: "1.5rem", color: "#4B6000", marginBottom: 20 }}>
                         You are a provider in service: <span style={{ fontWeight: "bold" }}>{selectedServiceNames.join(", ") || "None"}</span>
                     </div>
+                    <hr style={{ border: 'none', borderTop: '1.5px solid #dbe6c2', margin: '0 0 24px 0' }} />
                     <div className="provider-card" style={{ background: "#f6faee", color: "#4B6000", marginBottom: 20, fontSize: "1rem" }}>
                         <div style={{ fontWeight: "bold", marginBottom: 8 }}>Your availabilities</div>
                         {Object.entries(groupedAvailabilities).map(([service, slots]) => (
