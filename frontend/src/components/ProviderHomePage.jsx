@@ -135,15 +135,22 @@ export function ProviderHomePage() {
         }
     };
 
+    const isSameDay = (d1, d2) =>
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
+
     const isAvailable = (date) => {
-        const d = date.toISOString().slice(0, 10);
         const serviceName = selectedServices.length === 1
             ? selectedServices[0]
             : selectedServiceForAvailability;
-        return timeSlots.some(slot =>
-            slot.availableDate.startsWith(d) && slot.serviceName === serviceName
-        );
+
+        return timeSlots.some(slot => {
+            const slotDate = new Date(slot.availableDate.replace(" ", "T"));
+            return isSameDay(slotDate, date) && slot.serviceName === serviceName;
+        });
     };
+
 
     const groupedAvailabilities = selectedServices.reduce((acc, service) => {
         acc[service] = timeSlots.filter(slot => slot.serviceName === service);
