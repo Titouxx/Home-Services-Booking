@@ -128,6 +128,17 @@ const Header = ({ basketCount }) => {
             Who we are
           </Link>
           <Link
+            to="/profile"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            My profile
+          </Link>
+          <Link
             to="/appointments"
             style={{
               marginRight: "15px",
