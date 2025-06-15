@@ -3,15 +3,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HomePage } from "./components/HomePage.jsx";
 import ServiceDetailsPage from "./components/ServiceDetailsPage";
 import TermsPage from "./components/TermsPage";
+import AboutPage from "./components/AboutPage";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { BasketPage } from "./components/BasketPage.jsx";
 import { ProviderHomePage } from "./components/ProviderHomePage";
-import AboutPage from "./components/AboutPage";
 import MyAppointments from "./components/MyAppointments";
 import MessagingPage from "./components/MessagingPage";
 import ProviderReviewPage from "./components/ProviderReviewPage";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/about" element={<AboutPage />} />
 
         {/* Pages protégées (nécessitent authentification) */}
         <Route
@@ -90,19 +92,25 @@ function App() {
           }
         />
 
-        <Route 
-          path="/provider/:providerId/reviews" 
-          element={
-            <ProviderReviewPage />
-          } 
+        <Route
+          path="/provider/:providerId/reviews"
+          element={<ProviderReviewPage />}
         />
-
 
         <Route
           path="/about"
           element={
             <ProtectedRoute>
               <AboutPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

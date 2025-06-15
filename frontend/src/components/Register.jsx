@@ -1,4 +1,3 @@
-// src/components/Register.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";  // ← on importe Link
 import Header from "./Header";
@@ -35,12 +34,12 @@ export default function Register() {
         <div className="auth-page">
             <Header />
             <div className="auth-container">
-                <h2 className="auth-title">Inscription</h2>
+                <h2 className="auth-title">Register</h2>
                 <form onSubmit={handleRegister} className="auth-form">
                     <input
                         className="auth-input"
                         type="text"
-                        placeholder="Nom d’utilisateur"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
@@ -48,7 +47,7 @@ export default function Register() {
                     <input
                         className="auth-input"
                         type="password"
-                        placeholder="Mot de passe"
+                        placeholder="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -60,17 +59,16 @@ export default function Register() {
                         required
                     >
                         <option value="client">Client</option>
-                        <option value="prestataire">Prestataire</option>
-                        <option value="administrateur">Administrateur</option>
+                        <option value="prestataire">Provider</option>
                     </select>
                     <button className="auth-button" type="submit">
-                        S’inscrire
+                        Sign up
                     </button>
                 </form>
                 <p className="auth-switch">
-                    Déjà inscrit ?{" "}
+                    Already registered ?{" "}
                     <span className="auth-link" onClick={() => navigate("/login")}>
-            Connectez-vous
+            Log in
           </span>
                 </p>
                 {/* --- nouveau lien Terms en bas --- */}
