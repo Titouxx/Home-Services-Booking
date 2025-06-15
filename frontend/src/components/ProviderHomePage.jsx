@@ -97,7 +97,7 @@ export function ProviderHomePage() {
         ? selectedServiceNames[0]
         : selectedServiceForAvailability;
 
-    if (!serviceName) {
+    if (selectedServices.length > 1 && !serviceName) {
       alert("Please select a service.");
       return;
     }
