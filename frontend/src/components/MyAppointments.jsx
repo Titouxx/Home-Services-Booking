@@ -11,27 +11,29 @@ const MyAppointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch("/api/reservations/by-user/current", {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch("http://localhost:8080/api/reservations/by-user/current", {
           credentials: "include",
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Accept': 'application/json'
           }
         });
 
+        const responseData = await response.json();
+        
         if (!response.ok) {
-          if (response.status === 401) {
-            navigate('/login');
-            return;
-          }
-          throw new Error('Failed to fetch appointments');
+          throw new Error(responseData.error || 'Failed to fetch appointments');
         }
 
-        const data = await response.json();
-        setAppointments(data);
+        setAppointments(responseData);
       } catch (err) {
         console.error("Error loading appointments:", err);
         setError(err.message);
+        if (err.message.includes('authenticated') || err.message.includes('Unauthorized')) {
+          navigate('/login');
+        }
       } finally {
         setLoading(false);
       }
@@ -44,7 +46,7 @@ const MyAppointments = () => {
     if (!window.confirm("Confirm cancellation of this appointment?")) return;
 
     try {
-      const response = await fetch(`/api/reservations/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/reservations/${id}`, {
         method: "DELETE",
         credentials: "include"
       });
@@ -52,7 +54,8 @@ const MyAppointments = () => {
       if (response.status === 204) {
         setAppointments(prev => prev.filter(appt => appt.id !== id));
       } else {
-        throw new Error('Failed to cancel appointment');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to cancel appointment');
       }
     } catch (err) {
       console.error("Cancellation error:", err);
@@ -62,37 +65,65 @@ const MyAppointments = () => {
 
   return (
     <Layout>
-      <div className="appointments-container">
-        <h2>My Appointments</h2>
+      <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+        <h2 style={{ marginBottom: '1.5rem', color: '#2c3e50' }}>My Appointments</h2>
         
-        {error && <div className="error-message">{error}</div>}
-        
+        {error && (
+          <div style={{ 
+            color: '#e74c3c', 
+            padding: '1rem',
+            marginBottom: '1rem',
+            backgroundColor: '#fadbd8',
+            borderRadius: '4px'
+          }}>
+            {error}
+          </div>
+        )}
+
         {loading ? (
           <p>Loading appointments...</p>
         ) : appointments.length === 0 ? (
           <p>No appointments found.</p>
         ) : (
-          <ul className="appointments-list">
+          <div style={{ display: 'grid', gap: '1rem' }}>
             {appointments.map(appt => (
-              <li key={appt.id} className="appointment-item">
+              <div key={appt.id} style={{
+                padding: '1.5rem',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
                 <div>
-                  <h3>{appt.service?.name || "Unknown Service"}</h3>
-                  <p>
+                  <h3 style={{ margin: '0 0 0.5rem 0', color: '#3498db' }}>
+                    {appt.service?.name || "Unknown Service"}
+                  </h3>
+                  <p style={{ margin: '0.25rem 0' }}>
                     <strong>Date:</strong> {new Date(appt.appointmentDate).toLocaleString()}
                   </p>
                   {appt.customName && (
-                    <p><strong>Client:</strong> {appt.customName}</p>
+                    <p style={{ margin: '0.25rem 0' }}>
+                      <strong>Client:</strong> {appt.customName}
+                    </p>
                   )}
                 </div>
-                <button 
+                <button
                   onClick={() => handleCancel(appt.id)}
-                  className="cancel-button"
+                  style={{
+                    padding: '0.5rem 1rem',
+                    backgroundColor: '#e74c3c',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </Layout>

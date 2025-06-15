@@ -33,11 +33,6 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getConversations(me.getId()));
     }
 
-    @GetMapping("/conversation/{userId}")
-    public ResponseEntity<List<Message>> getConversation(@PathVariable Long userId) {
-        return ResponseEntity.ok(messageService.getConversation(userId));
-    }
-
     // Liste la conversation avec un autre user
     @GetMapping("/conversation/{otherUserId}")
     public ResponseEntity<?> getConversation(@PathVariable Long otherUserId, HttpSession session) {

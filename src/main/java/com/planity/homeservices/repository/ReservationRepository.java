@@ -1,20 +1,19 @@
 package com.planity.homeservices.repository;
 
 import com.planity.homeservices.model.Reservation;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
-import java.time.LocalDateTime;
 import com.planity.homeservices.model.Service;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     List<Reservation> findByUserId(Long userId);
-    boolean existsByServiceAndAppointmentDate(Service service, LocalDateTime appointmentDate);
     List<Reservation> findByServiceId(Long serviceId);
-
+    
     boolean existsByServiceAndAppointmentDateAndProviderId(
-            com.planity.homeservices.model.Service service,
-            java.time.LocalDateTime appointmentDate,
-            Long providerId
+        Service service, 
+        LocalDateTime appointmentDate, 
+        Long providerId
     );
-
 }
