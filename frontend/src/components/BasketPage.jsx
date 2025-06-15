@@ -7,11 +7,11 @@ import "../styles/BasketPage.css";
 // Helper to parse 'YYYY-MM-DD HH:mm:ss' or 'YYYY-MM-DDTHH:mm:ss' as local time
 function parseLocalDateTime(str) {
   if (!str) return null;
-  let s = str.replace('T', ' ');
-  const [datePart, timePart] = s.split(' ');
+  let s = str.replace("T", " ");
+  const [datePart, timePart] = s.split(" ");
   if (!datePart || !timePart) return new Date(str); // fallback
-  const [year, month, day] = datePart.split('-').map(Number);
-  const [hour, minute, second] = timePart.split(':').map(Number);
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
   return new Date(year, month - 1, day, hour, minute, second);
 }
 
@@ -89,19 +89,23 @@ export function BasketPage() {
 
   const formatDate = (dateString) => {
     const date = parseLocalDateTime(dateString);
-    return date ? date.toLocaleDateString("fr-FR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    }) : "";
+    return date
+      ? date.toLocaleDateString("fr-FR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "";
   };
 
   const formatTime = (dateString) => {
     const date = parseLocalDateTime(dateString);
-    return date ? date.toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit"
-    }) : "";
+    return date
+      ? date.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "";
   };
 
   // Group reservations by service/subservice name
@@ -153,40 +157,56 @@ export function BasketPage() {
             </div>
           ) : (
             <>
-              {Object.entries(groupedReservations).map(([serviceName, items]) => (
-                <div key={serviceName} style={{ marginBottom: 24 }}>
-                  <h3 style={{ color: '#4B6000', marginBottom: 8 }}>🔧 {serviceName}</h3>
-                  {items.map(item => (
-                    <div key={item.id} className="basket-item">
-                      <div>
-                        <p style={{ color: "#4B6000" }}>
-                          {item.customPrice ?? item.service?.price}€ /{" "}
-                          {item.customDuration ?? item.service?.durationMinutes}min
-                        </p>
-                        <p>
-                          <strong>Date:</strong> {formatDate(item.appointmentDate)}
-                          <br />
-                          <strong>Time:</strong> {formatTime(item.appointmentDate)}
-                        </p>
-                      </div>
-                        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                        <button
-                            onClick={() => navigate(`/message?providerId=${item.providerId}`)}
-                            className="message-button"
+              {Object.entries(groupedReservations).map(
+                ([serviceName, items]) => (
+                  <div key={serviceName} style={{ marginBottom: 24 }}>
+                    <h3 style={{ color: "#4B6000", marginBottom: 8 }}>
+                      🔧 {serviceName}
+                    </h3>
+                    {items.map((item) => (
+                      <div key={item.id} className="basket-item">
+                        <div>
+                          <p style={{ color: "#4B6000" }}>
+                            {item.customPrice ?? item.service?.price}€ /{" "}
+                            {item.customDuration ??
+                              item.service?.durationMinutes}
+                            min
+                          </p>
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {formatDate(item.appointmentDate)}
+                            <br />
+                            <strong>Time:</strong>{" "}
+                            {formatTime(item.appointmentDate)}
+                          </p>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "10px",
+                            marginTop: "10px",
+                          }}
                         >
-                          Message
-                        </button>
-                        <button
+                          <button
+                            onClick={() =>
+                              navigate(`/message?providerId=${item.providerId}`)
+                            }
+                            className="message-button"
+                          >
+                            Message
+                          </button>
+                          <button
                             onClick={() => handleRemoveItem(item.id)}
                             className="remove-button"
-                        >
-                          Remove
-                        </button>
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                    ))}
+                  </div>
+                )
+              )}
 
               <div className="basket-summary">
                 <div>
@@ -204,7 +224,6 @@ export function BasketPage() {
           )}
         </section>
       </main>
-      <Footer />
     </Layout>
   );
 }

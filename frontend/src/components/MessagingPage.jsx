@@ -10,7 +10,7 @@ export default function MessagingPage() {
   const { otherUserId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const providerId = searchParams.get('providerId');
+  const providerId = searchParams.get("providerId");
   const [me, setMe] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -36,56 +36,56 @@ export default function MessagingPage() {
     fetch("/api/messages/conversations", {
       credentials: "include",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     })
-    .then(r => {
-      if (!r.ok) {
-        throw new Error('Failed to fetch conversations');
-      }
-      return r.json();
-    })
-    .then(data => {
-      setConversations(data);
-    })
-    .catch(err => {
-      console.error('Error fetching conversations:', err);
-      setError(err.message);
-    });
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error("Failed to fetch conversations");
+        }
+        return r.json();
+      })
+      .then((data) => {
+        setConversations(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching conversations:", err);
+        setError(err.message);
+      });
   }, [me]);
 
   // Récupérer les messages d'une conversation
   useEffect(() => {
     if (!me || !otherUserId) return;
-    
+
     setLoading(true);
-    fetch(`/api/messages/conversation/${otherUserId}`, { 
+    fetch(`/api/messages/conversation/${otherUserId}`, {
       credentials: "include",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     })
-    .then(r => {
-      if (!r.ok) {
-        if (r.status === 401) {
-          navigate('/login');
-          throw new Error('Please log in to continue');
+      .then((r) => {
+        if (!r.ok) {
+          if (r.status === 401) {
+            navigate("/login");
+            throw new Error("Please log in to continue");
+          }
+          throw new Error("Failed to fetch messages");
         }
-        throw new Error('Failed to fetch messages');
-      }
-      return r.json();
-    })
-    .then(setMessages)
-    .catch(err => {
-      console.error('Error fetching messages:', err);
-      setError(err.message);
-      if (err.message.includes('log in')) {
-        navigate('/login');
-      }
-    })
-    .finally(() => setLoading(false));
+        return r.json();
+      })
+      .then(setMessages)
+      .catch((err) => {
+        console.error("Error fetching messages:", err);
+        setError(err.message);
+        if (err.message.includes("log in")) {
+          navigate("/login");
+        }
+      })
+      .finally(() => setLoading(false));
   }, [me, otherUserId, navigate]);
 
   // 1) récupère "me" depuis /api/auth/me
@@ -94,84 +94,84 @@ export default function MessagingPage() {
     fetch("/api/auth/me", {
       credentials: "include",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     })
-    .then(r => {
-      if (!r.ok) {
-        if (r.status === 401) {
-          navigate('/login');
-          throw new Error('Please log in to continue');
+      .then((r) => {
+        if (!r.ok) {
+          if (r.status === 401) {
+            navigate("/login");
+            throw new Error("Please log in to continue");
+          }
+          throw new Error("Failed to fetch user data");
         }
-        throw new Error('Failed to fetch user data');
-      }
-      return r.text().then(text => {
-        try {
-          return text ? JSON.parse(text) : {};
-        } catch (e) {
-          console.error('Error parsing JSON:', e);
-          return {};
+        return r.text().then((text) => {
+          try {
+            return text ? JSON.parse(text) : {};
+          } catch (e) {
+            console.error("Error parsing JSON:", e);
+            return {};
+          }
+        });
+      })
+      .then((user) => {
+        if (user && user.id) {
+          setMe(user);
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          console.error("Invalid user data received");
+          navigate("/login");
         }
-      });
-    })
-    .then(user => {
-      if (user && user.id) {
-        setMe(user);
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        console.error('Invalid user data received');
-        navigate('/login');
-      }
-    })
-    .catch(err => {
-      console.error('Error fetching user:', err);
-      setError(err.message);
-      if (err.message.includes('log in')) {
-        navigate('/login');
-      }
-    })
-    .finally(() => setLoading(false));
+      })
+      .catch((err) => {
+        console.error("Error fetching user:", err);
+        setError(err.message);
+        if (err.message.includes("log in")) {
+          navigate("/login");
+        }
+      })
+      .finally(() => setLoading(false));
   }, [navigate]);
 
   const handleSend = () => {
     if (!newMessage.trim() || !me || !otherUserId) return;
-    
+
     setLoading(true);
     fetch("/api/messages/send", {
       method: "POST",
       credentials: "include",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        'Accept': 'application/json'
+        Accept: "application/json",
       },
-      body: JSON.stringify({ receiverId: +otherUserId, content: newMessage })
+      body: JSON.stringify({ receiverId: +otherUserId, content: newMessage }),
     })
-    .then(r => {
-      if (!r.ok) {
-        if (r.status === 401) {
-          navigate('/login');
-          throw new Error('Please log in to continue');
+      .then((r) => {
+        if (!r.ok) {
+          if (r.status === 401) {
+            navigate("/login");
+            throw new Error("Please log in to continue");
+          }
+          return r.json().then((err) => {
+            throw new Error(err.error || "Failed to send message");
+          });
         }
-        return r.json().then(err => {
-          throw new Error(err.error || 'Failed to send message');
-        });
-      }
-      return r.json();
-    })
-    .then(m => {
-      setMessages(msgs => [...msgs, m]);
-      setNewMessage("");
-      setError(null);
-    })
-    .catch(err => {
-      console.error('Error sending message:', err);
-      setError(err.message);
-      if (err.message.includes('log in')) {
-        navigate('/login');
-      }
-    })
-    .finally(() => setLoading(false));
+        return r.json();
+      })
+      .then((m) => {
+        setMessages((msgs) => [...msgs, m]);
+        setNewMessage("");
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Error sending message:", err);
+        setError(err.message);
+        if (err.message.includes("log in")) {
+          navigate("/login");
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   if (loading) {
@@ -182,7 +182,6 @@ export default function MessagingPage() {
             <p>Loading...</p>
           </div>
         </main>
-        <Footer />
       </Layout>
     );
   }
@@ -197,10 +196,12 @@ export default function MessagingPage() {
               <p>Aucune conversation</p>
             ) : (
               <div className="conversations">
-                {conversations.map(conv => (
-                  <div 
-                    key={conv.id} 
-                    className={`conversation ${conv.id === otherUserId ? 'active' : ''}`}
+                {conversations.map((conv) => (
+                  <div
+                    key={conv.id}
+                    className={`conversation ${
+                      conv.id === otherUserId ? "active" : ""
+                    }`}
                     onClick={() => navigate(`/messages/${conv.id}`)}
                   >
                     <div className="conversation-header">
@@ -223,13 +224,15 @@ export default function MessagingPage() {
             ) : (
               <>
                 <div className="chat-header">
-                  <h2>Chat with {otherUser?.username || 'User'}</h2>
+                  <h2>Chat with {otherUser?.username || "User"}</h2>
                 </div>
                 <div className="messages">
-                  {messages.map(message => (
+                  {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`message ${message.senderId === me.id ? 'sent' : 'received'}`}
+                      className={`message ${
+                        message.senderId === me.id ? "sent" : "received"
+                      }`}
                     >
                       <p>{message.content}</p>
                       <span className="message-date">
@@ -243,10 +246,10 @@ export default function MessagingPage() {
                   <input
                     type="text"
                     value={newMessage}
-                    onChange={e => setNewMessage(e.target.value)}
+                    onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your message…"
                     disabled={loading}
-                    onKeyPress={e => e.key === 'Enter' && handleSend()}
+                    onKeyPress={(e) => e.key === "Enter" && handleSend()}
                   />
                   <button onClick={handleSend} disabled={loading}>
                     Send
@@ -257,7 +260,6 @@ export default function MessagingPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </Layout>
   );
 }

@@ -4,6 +4,7 @@ import MyCalendar from "./Calendar";
 import Header from "./Header";
 import Footer from "./Footer";
 import "../styles/ServiceDetailsPage.css";
+import Layout from "./Layout";
 
 const ServiceDetailsPage = () => {
   const { id } = useParams();
@@ -44,45 +45,49 @@ const ServiceDetailsPage = () => {
 
   return (
     <div className="service-container">
-      <Header basketCount={3} />
-
-      <div className="content-container">
-        <div className="header-section">
-          <h2 className="section-title">Sub-services</h2>
-          <button onClick={handleBookClick} className="book-btn">
-            Book
-          </button>
-        </div>
-
-        <div className="subservices-grid">
-          {subServices.map((sub) => (
-            <div
-              key={sub.id}
-              onClick={() => setSelectedSubService(sub)}
-              className={`subservice-card ${
-                selectedSubService?.id === sub.id ? "selected" : ""
-              }`}
-            >
-              <h3 className="subservice-title">🔧 {sub.name}</h3>
-              <p>
-                <strong className="price-text">Prix :</strong> {sub.price} € /{" "}
-                {sub.duration_minutes} minutes
-              </p>
-              <div className="description-box">{sub.description}</div>
-            </div>
-          ))}
-        </div>
-
-        {showCalendar && (
-          <div className="modal-overlay" onClick={() => setShowCalendar(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <MyCalendar selectedService={selectedSubService} />
-            </div>
+      <Layout>
+        <div className="content-container">
+          <div className="header-section">
+            <h2 className="section-title">Sub-services</h2>
+            <button onClick={handleBookClick} className="book-btn">
+              Book
+            </button>
           </div>
-        )}
-      </div>
 
-      <Footer />
+          <div className="subservices-grid">
+            {subServices.map((sub) => (
+              <div
+                key={sub.id}
+                onClick={() => setSelectedSubService(sub)}
+                className={`subservice-card ${
+                  selectedSubService?.id === sub.id ? "selected" : ""
+                }`}
+              >
+                <h3 className="subservice-title">🔧 {sub.name}</h3>
+                <p>
+                  <strong className="price-text">Prix :</strong> {sub.price} € /{" "}
+                  {sub.duration_minutes} minutes
+                </p>
+                <div className="description-box">{sub.description}</div>
+              </div>
+            ))}
+          </div>
+
+          {showCalendar && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowCalendar(false)}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MyCalendar selectedService={selectedSubService} />
+              </div>
+            </div>
+          )}
+        </div>
+      </Layout>
     </div>
   );
 };
