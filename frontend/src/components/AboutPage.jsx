@@ -1,4 +1,3 @@
-// src/components/AboutPage.jsx
 import React from "react";
 import Layout from "./Layout";
 import "../styles/AboutPage.css";

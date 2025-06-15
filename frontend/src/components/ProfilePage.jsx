@@ -1,4 +1,3 @@
-// src/components/ProfilePage.jsx
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import "../styles/Profile.css";

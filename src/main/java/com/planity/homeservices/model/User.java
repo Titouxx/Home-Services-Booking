@@ -1,4 +1,3 @@
-// src/main/java/com/planity/homeservices/model/User.java
 package com.planity.homeservices.model;
 
 import jakarta.persistence.*;

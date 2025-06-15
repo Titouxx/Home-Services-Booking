@@ -1,6 +1,5 @@
-// src/components/Login.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";  // ← on importe Link
+import { useNavigate, Link } from "react-router-dom";
 import Header from "./Header";
 import "../styles/Auth.css";
 

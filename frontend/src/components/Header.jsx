@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Header.css"; // ✅ Import CSS
+import "../styles/Header.css";
 
 const Header = ({ basketCount }) => {
     const navigate = useNavigate();

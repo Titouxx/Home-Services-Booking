@@ -1,7 +1,6 @@
-// src/components/TermsPage.jsx
 import React from "react";
 import { Link } from "react-router-dom";
-import "../styles/TermsPage.css"; // ✅ Import the CSS
+import "../styles/TermsPage.css";
 
 const TermsPage = () => {
   return (

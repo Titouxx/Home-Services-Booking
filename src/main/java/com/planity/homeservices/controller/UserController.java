@@ -1,4 +1,3 @@
-// src/main/java/com/planity/homeservices/controller/UserController.java
 package com.planity.homeservices.controller;
 
 import com.planity.homeservices.model.User;

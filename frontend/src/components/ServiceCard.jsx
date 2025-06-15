@@ -1,4 +1,3 @@
-// Fichier : src/main/resources/static/react-ui/components/ServiceCard.js
 import React from "react";
 import "../styles/serviceCard.css";
 
