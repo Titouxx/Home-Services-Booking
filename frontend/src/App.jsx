@@ -13,8 +13,6 @@ import MyAppointments from "./components/MyAppointments";
 import MessagingPage from "./components/MessagingPage";
 import ProviderReviewPage from "./components/ProviderReviewPage";
 
-
-
 function App() {
   return (
     <BrowserRouter>
@@ -57,18 +55,39 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route 
-          path="/my-appointments" 
+        <Route
+          path="/appointments"
           element={
-            <MyAppointments />
-          } 
+            <ProtectedRoute>
+              <MyAppointments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-appointments"
+          element={
+            <ProtectedRoute>
+              <MyAppointments />
+            </ProtectedRoute>
+          }
         />
 
+        {/* Routes de messagerie */}
         <Route
-          path="/messages" 
+          path="/messages/:otherUserId"
           element={
-            <MessagingPage />
-          } 
+            <ProtectedRoute>
+              <MessagingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/message"
+          element={
+            <ProtectedRoute>
+              <MessagingPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route 

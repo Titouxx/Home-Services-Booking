@@ -1,96 +1,101 @@
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
+import { useNavigate } from "react-router-dom";
+import Layout from "./Layout";
 
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/reservations")
-      .then((res) => res.json())
-      .then((data) => {
-        setAppointments(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Erreur chargement réservations:", err);
-        setLoading(false);
-      });
-  }, []);
+    const fetchAppointments = async () => {
+      try {
+        const response = await fetch("/api/reservations/by-user/current", {
+          credentials: "include",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
 
-  const handleDelete = (id) => {
-    if (!window.confirm("Confirmer l'annulation de ce rendez-vous ?")) return;
-
-    fetch(`/api/reservations/${id}`, { method: "DELETE" })
-      .then((res) => {
-        if (res.status === 204) {
-          setAppointments((prev) => prev.filter((appt) => appt.id !== id));
-        } else {
-          alert("Erreur lors de l'annulation.");
+        if (!response.ok) {
+          if (response.status === 401) {
+            navigate('/login');
+            return;
+          }
+          throw new Error('Failed to fetch appointments');
         }
-      })
-      .catch((err) => {
-        console.error("Erreur suppression:", err);
-        alert("Une erreur est survenue.");
+
+        const data = await response.json();
+        setAppointments(data);
+      } catch (err) {
+        console.error("Error loading appointments:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [navigate]);
+
+  const handleCancel = async (id) => {
+    if (!window.confirm("Confirm cancellation of this appointment?")) return;
+
+    try {
+      const response = await fetch(`/api/reservations/${id}`, {
+        method: "DELETE",
+        credentials: "include"
       });
+
+      if (response.status === 204) {
+        setAppointments(prev => prev.filter(appt => appt.id !== id));
+      } else {
+        throw new Error('Failed to cancel appointment');
+      }
+    } catch (err) {
+      console.error("Cancellation error:", err);
+      setError(err.message);
+    }
   };
 
-  if (loading) return <p style={{ padding: "2rem" }}>Chargement des rendez-vous...</p>;
-
   return (
-    <>
-      <Header />
-      <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-        <h2 style={{ color: "#4B6000", marginBottom: "1rem" }}>📋 My Appointments</h2>
-
-        {appointments.length === 0 ? (
-          <p>Aucun rendez-vous pour le moment.</p>
+    <Layout>
+      <div className="appointments-container">
+        <h2>My Appointments</h2>
+        
+        {error && <div className="error-message">{error}</div>}
+        
+        {loading ? (
+          <p>Loading appointments...</p>
+        ) : appointments.length === 0 ? (
+          <p>No appointments found.</p>
         ) : (
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {appointments.map((appt) => (
-              <li
-                key={appt.id}
-                style={{
-                  backgroundColor: "#f7fbea",
-                  padding: "1rem",
-                  borderRadius: "8px",
-                  marginBottom: "1rem",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+          <ul className="appointments-list">
+            {appointments.map(appt => (
+              <li key={appt.id} className="appointment-item">
                 <div>
-                  <strong style={{ color: "#4B6000" }}>
-                    {appt.service?.name ?? "Service inconnu"}
-                  </strong>
-                  <p style={{ margin: 0 }}>
-                    📅 {new Date(appt.appointmentDate).toLocaleString()}<br />
-                    🕒 {appt.customDuration} min – 💶 {appt.customPrice} €<br />
-                    👤 Client : {appt.customName}
+                  <h3>{appt.service?.name || "Unknown Service"}</h3>
+                  <p>
+                    <strong>Date:</strong> {new Date(appt.appointmentDate).toLocaleString()}
                   </p>
+                  {appt.customName && (
+                    <p><strong>Client:</strong> {appt.customName}</p>
+                  )}
                 </div>
-                <button
-                  onClick={() => handleDelete(appt.id)}
-                  style={{
-                    background: "#c0392b",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 12px",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
+                <button 
+                  onClick={() => handleCancel(appt.id)}
+                  className="cancel-button"
                 >
-                  Annuler
+                  Cancel
                 </button>
               </li>
             ))}
           </ul>
         )}
       </div>
-      <Footer />
-    </>
+    </Layout>
   );
 };
 

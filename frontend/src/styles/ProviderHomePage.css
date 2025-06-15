@@ -239,3 +239,74 @@ body {
     pointer-events: none;
     opacity: 0.6;
 }
+
+.provider-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.provider-dashboard h2 {
+    color: #4B6000;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.reservations-list {
+    background: #f6faee;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.reservations-list h3 {
+    color: #4B6000;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dbe6c2;
+}
+
+th {
+    background-color: #4B6000;
+    color: white;
+    font-weight: 500;
+}
+
+tr:hover {
+    background-color: #f0f5e6;
+}
+
+.message-button {
+    background-color: #4B6000;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.message-button:hover {
+    background-color: #3d4d00;
+}
+
+.message-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

@@ -3,5 +3,7 @@ CREATE TABLE messages (
     sender_id BIGINT REFERENCES users(id),
     receiver_id BIGINT REFERENCES users(id),
     content TEXT NOT NULL,
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    reservation_id BIGINT REFERENCES reservation(id)
+); 

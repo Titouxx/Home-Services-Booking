@@ -1,46 +1,67 @@
+// src/main/java/com/planity/homeservices/controller/MessageController.java
 package com.planity.homeservices.controller;
 
 import com.planity.homeservices.dto.MessageRequest;
 import com.planity.homeservices.model.Message;
 import com.planity.homeservices.model.User;
-import com.planity.homeservices.repository.MessageRepository;
-import com.planity.homeservices.repository.UserRepository;
+import com.planity.homeservices.service.MessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/messages")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class MessageController {
+    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
-    private final MessageRepository messageRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private MessageService messageService;
 
-    public MessageController(MessageRepository messageRepository, UserRepository userRepository) {
-        this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
+    @GetMapping("/conversations")
+    public ResponseEntity<List<Map<String, Object>>> getConversations(HttpSession session) {
+        User me = (User) session.getAttribute("user");
+        if (me == null) {
+            return ResponseEntity.status(401).body(List.of());
+        }
+        return ResponseEntity.ok(messageService.getConversations(me.getId()));
     }
 
-    @PostMapping
-    public ResponseEntity<?> sendMessage(@RequestBody MessageRequest request) {
-        User sender = userRepository.findById(request.getSenderId()).orElseThrow();
-        User receiver = userRepository.findById(request.getReceiverId()).orElseThrow();
-
-        Message message = new Message();
-        message.setSender(sender);
-        message.setReceiver(receiver);
-        message.setContent(request.getContent());
-
-        return ResponseEntity.ok(messageRepository.save(message));
+    @GetMapping("/conversation/{userId}")
+    public ResponseEntity<List<Message>> getConversation(@PathVariable Long userId) {
+        return ResponseEntity.ok(messageService.getConversation(userId));
     }
 
-    @GetMapping("/{user1Id}/{user2Id}")
-    public ResponseEntity<List<Message>> getConversation(@PathVariable Long user1Id, @PathVariable Long user2Id) {
-        List<Message> conversation = messageRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(
-            user1Id, user2Id, user1Id, user2Id
-        );
-        return ResponseEntity.ok(conversation);
+    // Liste la conversation avec un autre user
+    @GetMapping("/conversation/{otherUserId}")
+    public ResponseEntity<?> getConversation(@PathVariable Long otherUserId, HttpSession session) {
+        User me = (User) session.getAttribute("user");
+        if (me == null) {
+            return ResponseEntity.status(401).body(List.of());
+        }
+        return ResponseEntity.ok(messageService.getConversation(me.getId(), otherUserId));
+    }
+
+    // Envoie un message
+    @PostMapping("/send")
+    public ResponseEntity<?> sendMessage(@RequestBody MessageRequest req, HttpSession session) {
+        User me = (User) session.getAttribute("user");
+        if (me == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
+        }
+        if (req.getContent() == null || req.getContent().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Message content cannot be empty"));
+        }
+        if (req.getReceiverId() == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Receiver ID is required"));
+        }
+        Message saved = messageService.saveMessage(me.getId(), req.getReceiverId(), req.getContent());
+        return ResponseEntity.ok(saved);
     }
 }

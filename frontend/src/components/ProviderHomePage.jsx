@@ -196,6 +196,13 @@ export function ProviderHomePage() {
                     </button>
                     <button
                         className="provider-btn"
+                        style={{ marginBottom: 18 }}
+                        onClick={() => navigate("/message")}
+                    >
+                        Messages
+                    </button>
+                    <button
+                        className="provider-btn"
                         style={{ background: "#fff", color: "#4B6000", border: "1.5px solid #4B6000" }}
                         onClick={() => setShowServiceSelector(v => !v)}
                     >
