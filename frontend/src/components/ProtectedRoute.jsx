@@ -1,29 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null);
+const ProtectedRoute = ({ children, adminOnly = false }) => {
+  const [authInfo, setAuthInfo] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const response = await fetch("http://localhost:8080/api/auth/me", {
-                    credentials: "include"
-                });
-                setIsAuthenticated(response.ok);
-            } catch (error) {
-                console.error("Erreur de vérification de session :", error);
-                setIsAuthenticated(false);
-            }
-        };
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/auth/me", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const userData = await response.json();
+          setAuthInfo({ ...userData, isAuthenticated: true });
 
-        checkSession();
-    }, []);
+          if (adminOnly && userData.status !== "administrateur") {
+            navigate("/");
+          } else if (!adminOnly && userData.status === "administrateur") {
+            navigate("/admin");
+          }
+        } else {
+          setAuthInfo({ isAuthenticated: false });
+        }
+      } catch (error) {
+        console.error("Session check error:", error);
+        setAuthInfo({ isAuthenticated: false });
+      }
+    };
 
-    if (isAuthenticated === null) return <p>Chargement...</p>;
-    if (!isAuthenticated) return <Navigate to="/login" />;
+    checkSession();
+  }, [adminOnly, navigate]);
 
-    return children;
+  if (authInfo === null) return <p>Loading...</p>;
+  if (!authInfo?.isAuthenticated) return <Navigate to="/login" />;
+
+  return children;
 };
 
 export default ProtectedRoute;

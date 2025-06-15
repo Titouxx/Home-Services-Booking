@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,5 +55,12 @@ public class UserService {
             u.setPassword(passwordEncoder.encode(rawPassword));
         }
         return userRepository.save(u);
+    }
+    public List<User> getAllUsers() {
+    return userRepository.findAll();
+}
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }

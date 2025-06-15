@@ -13,6 +13,7 @@ import MyAppointments from "./components/MyAppointments";
 import MessagingPage from "./components/MessagingPage";
 import ProviderReviewPage from "./components/ProviderReviewPage";
 import ProfilePage from "./components/ProfilePage";
+import AdminPage from "./components/AdminPage.jsx";
 
 function App() {
   return (
@@ -105,12 +106,19 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/profile"
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
             </ProtectedRoute>
           }
         />

@@ -1,0 +1,36 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  margin-top: 50px;
+  text-align: center;
+  border-top: 1px solid #eee;
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: #4b6000;
+  font-weight: bold;
+  margin-left: 15px;
+}
+
+.footer-button {
+  background-color: transparent;
+  color: #4b6000;
+  border: 1px solid #4b6000;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.footer-button:hover {
+  background-color: #4b6000;
+  color: white;
+  transition: background-color 0.3s ease;
+}
