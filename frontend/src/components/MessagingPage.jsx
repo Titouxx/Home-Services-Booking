@@ -134,6 +134,32 @@ export default function MessagingPage() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
+  // Add this useEffect hook to your component
+  useEffect(() => {
+    if (!otherUserId) return;
+
+    fetch(`/api/users/${otherUserId}`, {
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error("Failed to fetch user details");
+        }
+        return r.json();
+      })
+      .then((user) => {
+        setOtherUser(user);
+      })
+      .catch((err) => {
+        console.error("Error fetching user details:", err);
+        setError(err.message);
+      });
+  }, [otherUserId]);
+
   const handleSend = () => {
     if (!newMessage.trim() || !me || !otherUserId) return;
 
@@ -224,7 +250,9 @@ export default function MessagingPage() {
             ) : (
               <>
                 <div className="chat-header">
-                  <h2>Chat with {otherUser?.username || "User"}</h2>
+                  <h2>
+                    Chat with {otherUser ? `${otherUser.username}` : "User"}
+                  </h2>
                 </div>
                 <div className="messages">
                   {messages.map((message) => (
