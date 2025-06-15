@@ -229,20 +229,6 @@ export function ProviderHomePage() {
           </div>
           <button
             className="provider-btn"
-            style={{ marginBottom: 18 }}
-            onClick={() => navigate("/appointments")}
-          >
-            Go to appointments
-          </button>
-          <button
-            className="provider-btn"
-            style={{ marginBottom: 18 }}
-            onClick={() => navigate("/message")}
-          >
-            Messages
-          </button>
-          <button
-            className="provider-btn"
             style={{
               background: "#fff",
               color: "#4B6000",

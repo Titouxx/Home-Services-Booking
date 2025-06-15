@@ -1,16 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/TermsPage.css";
+import Layout from "./Layout";
 
 const TermsPage = () => {
   return (
-      <div className="terms-container">
-        <header className="terms-header">
-          <Link to="/" className="terms-logo-link">
-            PLANITY
-          </Link>
-        </header>
-
+    <div className="terms-container">
+      <Layout>
         <h1 className="terms-title">Terms of Service</h1>
 
         <div>
@@ -28,14 +24,15 @@ const TermsPage = () => {
 
           <h2 className="terms-section-title">3. Booking Policy</h2>
           <p className="terms-paragraph">
-            All service bookings require payment authorization. Cancellations must
-            be made at least 24 hours before the scheduled service.
+            All service bookings require payment authorization. Cancellations
+            must be made at least 24 hours before the scheduled service.
           </p>
 
           <h2 className="terms-section-title">4. Liability</h2>
           <p className="terms-paragraph">
             PLANITY acts as an intermediary between users and service providers.
-            We are not liable for any damages occurring during service provision.
+            We are not liable for any damages occurring during service
+            provision.
           </p>
 
           <h2 className="terms-section-title">5. Privacy</h2>
@@ -59,13 +56,8 @@ const TermsPage = () => {
             })}
           </p>
         </div>
-
-        <footer className="terms-footer">
-          <Link to="/" className="terms-back-link">
-            ← Back to Home
-          </Link>
-        </footer>
-      </div>
+      </Layout>
+    </div>
   );
 };
 

@@ -32,68 +32,127 @@ const Header = ({ basketCount }) => {
         </Link>
       </header>
     );
-  }
-
-  return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "20px",
-      }}
-    >
-      <Link
-        to="/"
+  } else if (userStatus === "client") {
+    return (
+      <header
         style={{
-          color: "#4B6000",
-          textDecoration: "none",
-          fontSize: "2rem",
-          fontWeight: "bold",
-          fontFamily: "Georgia, serif",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "20px",
         }}
       >
-        PLANITY
-      </Link>
-      <nav>
         <Link
-          to="/about"
+          to="/"
           style={{
-            marginRight: "15px",
-            textDecoration: "none",
             color: "#4B6000",
+            textDecoration: "none",
+            fontSize: "2rem",
             fontWeight: "bold",
+            fontFamily: "Georgia, serif",
           }}
         >
-          Who we are
+          PLANITY
         </Link>
+        <nav>
+          <Link
+            to="/about"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            Who we are
+          </Link>
+          <Link
+            to="/profile"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            My profile
+          </Link>
+          <button
+            onClick={() => navigate("/basket")}
+            style={{
+              background: "#4B6000",
+              color: "white",
+              border: "none",
+              padding: "6px 12px",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Basket ({basketCount})
+          </button>
+        </nav>
+      </header>
+    );
+  } else if (userStatus === "prestataire") {
+    return (
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "20px",
+        }}
+      >
         <Link
-          to="/profile"
+          to="/provider-dashboard"
           style={{
-            marginRight: "15px",
-            textDecoration: "none",
             color: "#4B6000",
+            textDecoration: "none",
+            fontSize: "2rem",
             fontWeight: "bold",
+            fontFamily: "Georgia, serif",
           }}
         >
-          My profile
+          PLANITY
         </Link>
-        <button
-          onClick={() => navigate("/basket")}
-          style={{
-            background: "#4B6000",
-            color: "white",
-            border: "none",
-            padding: "6px 12px",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Basket ({basketCount})
-        </button>
-      </nav>
-    </header>
-  );
+        <nav>
+          <Link
+            to="/about"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            Who we are
+          </Link>
+          <Link
+            to="/appointments"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            My appointments
+          </Link>
+          <Link
+            to="/message"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            My messages
+          </Link>
+        </nav>
+      </header>
+    );
+  }
 };
 
 export default Header;
