@@ -38,4 +38,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
         LocalDateTime appointmentDate,
         Long providerId
     );
+
+    @Query("SELECT r FROM Reservation r JOIN FETCH r.user JOIN FETCH r.service WHERE r.providerId = :providerId")
+    List<Reservation> findByProviderId(@Param("providerId") Long providerId);
 }

@@ -138,4 +138,21 @@ public class ReservationController {
                 .body(Map.of("error", "Failed to delete reservation: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/by-provider/current")
+    public ResponseEntity<?> getCurrentProviderReservations(HttpSession session) {
+        try {
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "User not authenticated"));
+            }
+            
+            List<Reservation> reservations = reservationRepository.findByProviderId(user.getId());
+            return ResponseEntity.ok(reservations);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Failed to fetch provider reservations: " + e.getMessage()));
+        }
+    }
 }
