@@ -81,8 +81,8 @@ export default function ProfilePage() {
         {/* New info line */}
         {!editing && (
           <p className="profile-intro">
-            Your first name is <strong>{user.username}</strong> and your status
-            is <strong>{user.status}</strong>.<br />
+            Your username is <strong>{user.username}</strong> and your status is{" "}
+            <strong>{user.status}</strong>.<br />
             Would you like to complete or modify these details?
           </p>
         )}
