@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -26,16 +25,12 @@ public class MessageService {
     private ReservationRepository reservationRepository;
 
     public List<Map<String, Object>> getConversations(Long currentUserId) {
-        // Get all message-based conversations
         List<Message> allMessages = messageRepository.findBySenderIdOrReceiverId(currentUserId, currentUserId);
         
-        // Get all reservation-based conversations
         List<Reservation> allReservations = reservationRepository.findByUserIdOrProviderId(currentUserId);
         
-        // Combine both sources to get all potential conversation partners
         Set<Long> conversationPartners = new HashSet<>();
         
-        // Add partners from messages
         allMessages.forEach(m -> {
             if (m.getSenderId().equals(currentUserId)) {
                 conversationPartners.add(m.getReceiverId());
@@ -44,7 +39,6 @@ public class MessageService {
             }
         });
         
-        // Add partners from reservations
         allReservations.forEach(r -> {
             if (r.getUser().getId().equals(currentUserId)) {
                 conversationPartners.add(r.getProviderId());
@@ -53,7 +47,6 @@ public class MessageService {
             }
         });
         
-        // Create conversation list with details
         List<Map<String, Object>> conversationList = new ArrayList<>();
         
         for (Long partnerId : conversationPartners) {
@@ -67,7 +60,6 @@ public class MessageService {
             conversation.put("firstName", partner.getFirstName());
             conversation.put("lastName", partner.getLastName());
             
-            // Get the last message if exists
             List<Message> messages = messageRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(
                 currentUserId, partnerId);
             
@@ -82,7 +74,6 @@ public class MessageService {
                     .filter(m -> !m.getIsRead() && m.getSenderId().equals(partnerId))
                     .count());
             } else {
-                // No messages yet, use reservation info
                 Optional<Reservation> latestReservation = allReservations.stream()
                     .filter(r -> r.getUser().getId().equals(partnerId) || 
                                r.getProviderId().equals(partnerId))
@@ -101,7 +92,6 @@ public class MessageService {
             conversationList.add(conversation);
         }
         
-        // Sort conversations by last interaction date (newest first)
         conversationList.sort((a, b) -> 
             ((LocalDateTime) b.get("lastMessageDate"))
                 .compareTo((LocalDateTime) a.get("lastMessageDate")));
@@ -110,7 +100,6 @@ public class MessageService {
     }
 
     public List<Message> getConversation(Long currentUserId, Long otherUserId) {
-        // Mark messages as read when fetching conversation
         List<Message> unreadMessages = messageRepository.findByReceiverIdAndSenderIdAndIsReadFalse(
             currentUserId, otherUserId);
         

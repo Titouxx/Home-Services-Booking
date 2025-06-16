@@ -30,7 +30,6 @@ public class ProviderServiceController {
         List<?> serviceNamesRaw = (List<?>) body.get("serviceNames");
         List<String> serviceNames = serviceNamesRaw.stream().map(Object::toString).toList();
 
-        // Optionally: remove previous services for this provider
         providerServiceRepository.deleteByProviderId(providerId);
 
         for (String name : serviceNames) {

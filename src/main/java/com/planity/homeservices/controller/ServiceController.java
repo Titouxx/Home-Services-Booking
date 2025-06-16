@@ -22,7 +22,6 @@ public class ServiceController {
         this.repository = repository;
     }
 
-    // Récupération de tous les services, accessible uniquement si connecté
     @GetMapping
     public ResponseEntity<List<Service>> getAllServices(HttpSession session) {
         Boolean loggedIn = (Boolean) session.getAttribute("logged_in");
@@ -33,7 +32,6 @@ public class ServiceController {
         return ResponseEntity.ok(services);
     }
 
-    // Récupération d’un service par ID, accessible uniquement si connecté
     @GetMapping("/{id}")
     public ResponseEntity<Service> getServiceById(@PathVariable Long id, HttpSession session) {
         Boolean loggedIn = (Boolean) session.getAttribute("logged_in");
@@ -45,10 +43,6 @@ public class ServiceController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Forward toutes les autres routes prises en charge par React Router
-     * vers index.html afin de laisser le front gérer le routage.
-     */
     @Controller
     public static class FrontendController {
         @RequestMapping(value = {

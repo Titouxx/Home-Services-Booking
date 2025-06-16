@@ -30,7 +30,6 @@ public class ProviderAvailabilityController {
         Long providerId = Long.valueOf(body.get("providerId").toString());
         String dateStr = body.get("date").toString();
         String serviceName = body.get("serviceName").toString();
-        // Enlève le Z si présent
         if (dateStr.endsWith("Z")) {
             dateStr = dateStr.replace("Z", "");
         }

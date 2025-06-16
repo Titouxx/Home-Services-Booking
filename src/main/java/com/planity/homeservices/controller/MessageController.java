@@ -1,4 +1,3 @@
-// src/main/java/com/planity/homeservices/controller/MessageController.java
 package com.planity.homeservices.controller;
 
 import com.planity.homeservices.dto.MessageRequest;
@@ -8,9 +7,6 @@ import com.planity.homeservices.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +15,6 @@ import java.util.Map;
 @RequestMapping("/api/messages")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class MessageController {
-    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
-
     @Autowired
     private MessageService messageService;
 
@@ -33,7 +27,6 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getConversations(me.getId()));
     }
 
-    // Liste la conversation avec un autre user
     @GetMapping("/conversation/{otherUserId}")
     public ResponseEntity<?> getConversation(@PathVariable Long otherUserId, HttpSession session) {
         User me = (User) session.getAttribute("user");
@@ -43,7 +36,6 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getConversation(me.getId(), otherUserId));
     }
 
-    // Envoie un message
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestBody MessageRequest req, HttpSession session) {
         User me = (User) session.getAttribute("user");

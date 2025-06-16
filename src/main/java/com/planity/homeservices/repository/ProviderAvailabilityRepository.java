@@ -8,6 +8,7 @@ import java.util.List;
 public interface ProviderAvailabilityRepository extends JpaRepository<ProviderAvailability, Long> {
     List<ProviderAvailability> findByProviderId(Long providerId);
     List<ProviderAvailability> findByServiceName(String serviceName);
+    @SuppressWarnings("null")
     List<ProviderAvailability> findAll();
 
 }

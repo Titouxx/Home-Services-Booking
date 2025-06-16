@@ -1,4 +1,3 @@
-// src/main/java/com/planity/homeservices/dto/MessageRequest.java
 package com.planity.homeservices.dto;
 
 import lombok.Getter;

@@ -21,19 +21,16 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    // Get all providers
     @GetMapping("/providers")
     public ResponseEntity<List<User>> getAllProviders() {
         return ResponseEntity.ok(reviewService.getAllProviders());
     }
 
-    // Get reviews for a specific provider
     @GetMapping("/provider/{providerId}")
     public ResponseEntity<List<Review>> getReviewsForProvider(@PathVariable Long providerId) {
         return ResponseEntity.ok(reviewService.getReviewsForProvider(providerId));
     }
 
-    // Submit a new review
     @PostMapping
     public ResponseEntity<?> createReview(@RequestBody ReviewRequest req, HttpSession session) {
         User me = (User) session.getAttribute("user");

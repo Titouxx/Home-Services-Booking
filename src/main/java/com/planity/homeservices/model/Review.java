@@ -26,5 +26,5 @@ public class Review {
     private User provider;
 
     @ManyToOne
-    private User user; // le client qui laisse l'avis
+    private User user;
 }

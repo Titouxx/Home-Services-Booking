@@ -14,7 +14,6 @@ public class ProviderAvailability {
     private LocalDateTime availableDate;
     private String serviceName;
 
-    // Getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

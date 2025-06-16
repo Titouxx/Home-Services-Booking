@@ -23,18 +23,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1) Activer la prise en charge de CORS
                 .cors(withDefaults())
-
-                // 2) Désactiver CSRF (fetch + cookies)
                 .csrf(csrf -> csrf.disable())
-
-                // 3) Rendre tous les endpoints accessibles (votre app gère l’auth côté front)
                 .authorizeHttpRequests(auth -> auth
                                 .anyRequest().permitAll()
                 )
-
-                // 4) Activer le logout standard (POST /logout)
                 .logout(logout -> logout
                                 .logoutUrl("/logout")
                                 .permitAll()
@@ -42,11 +35,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    /**
-     * Déclare la politique CORS pour autoriser vos requêtes depuis Vite (5173)
-     * et transmettre les cookies de session.
-     */
+    
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();

@@ -19,18 +19,16 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@SuppressWarnings("null")     ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
     }
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        // Redirige toutes les routes non-API vers index.html
+    public void addViewControllers(@SuppressWarnings("null")     ViewControllerRegistry registry) {
         registry.addViewController("/{path:[^\\.]*}")
                 .setViewName("forward:/index.html");
         
-        // Gestion des sous-routes
         registry.addViewController("/message/**")
                 .setViewName("forward:/index.html");
         registry.addViewController("/messages/**")
