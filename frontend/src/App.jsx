@@ -14,6 +14,7 @@ import MessagingPage from "./components/MessagingPage";
 import ProviderReviewPage from "./components/ProviderReviewPage";
 import ProfilePage from "./components/ProfilePage";
 import AdminPage from "./components/AdminPage.jsx";
+import ReviewListPage from "./components/ReviewListPage.jsx";
 
 function App() {
   return (
@@ -95,7 +96,11 @@ function App() {
 
         <Route
           path="/provider/:providerId/reviews"
-          element={<ProviderReviewPage />}
+          element={
+            <ProtectedRoute>
+              <ProviderReviewPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -119,6 +124,30 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviews"
+          element={
+            <ProtectedRoute>
+              <ReviewListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviews/:providerId"
+          element={
+            <ProtectedRoute>
+              <ProviderReviewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/provider/:providerId/reviews"
+          element={
+            <ProtectedRoute>
+              <ProviderReviewPage />
             </ProtectedRoute>
           }
         />

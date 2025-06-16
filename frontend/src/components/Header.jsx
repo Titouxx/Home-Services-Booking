@@ -5,6 +5,7 @@ import "../styles/Header.css";
 const Header = ({ basketCount }) => {
   const navigate = useNavigate();
   const [userStatus, setUserStatus] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -15,6 +16,7 @@ const Header = ({ basketCount }) => {
         if (response.ok) {
           const userData = await response.json();
           setUserStatus(userData.status);
+          setUserId(userData.id);
         }
       } catch (error) {
         console.error("Error checking user status:", error);
@@ -76,6 +78,17 @@ const Header = ({ basketCount }) => {
             }}
           >
             My profile
+          </Link>
+          <Link
+            to="/reviews"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            Reviews
           </Link>
           <button
             onClick={() => navigate("/basket")}
@@ -159,6 +172,17 @@ const Header = ({ basketCount }) => {
             }}
           >
             My messages
+          </Link>
+          <Link
+            to={`/provider/${userId}/reviews`}
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            My reviews
           </Link>
         </nav>
       </header>
