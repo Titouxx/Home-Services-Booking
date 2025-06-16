@@ -90,6 +90,17 @@ const Header = ({ basketCount }) => {
           >
             Reviews
           </Link>
+          <Link
+            to="/message"
+            style={{
+              marginRight: "15px",
+              textDecoration: "none",
+              color: "#4B6000",
+              fontWeight: "bold",
+            }}
+          >
+            My messages
+          </Link>
           <button
             onClick={() => navigate("/basket")}
             style={{
