@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import "../styles/ReviewPage.css";
@@ -20,7 +20,6 @@ const ProviderReviewPage = () => {
         setLoading(true);
         const [providerRes, reviewsRes, userRes] = await Promise.all([
           fetch(`/api/auth/user/${providerId}`, {
-            // Changed this line
             credentials: "include",
             headers: {
               Accept: "application/json",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import "../styles/AdminPage.css";
@@ -11,36 +11,29 @@ const AdminPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Enhanced date formatting utility
   const formatDate = (dateInput) => {
-    console.log("Raw date input:", dateInput); // Debugging
+    console.log("Raw date input:", dateInput);
 
     if (!dateInput) return "N/A";
 
     try {
-      // Case 1: Already a Date object
       if (dateInput instanceof Date) {
         return dateInput.toLocaleString();
       }
 
-      // Case 2: ISO string (e.g., "2023-05-15T10:00:00")
       if (typeof dateInput === "string") {
-        // Try parsing as ISO string first
         const isoDate = new Date(dateInput);
         if (!isNaN(isoDate.getTime())) return isoDate.toLocaleString();
 
-        // Try parsing as "YYYY-MM-DD HH:mm:ss" format
         const localDate = parseLocalDateTime(dateInput);
         if (localDate) return localDate.toLocaleString();
       }
 
-      // Case 3: Timestamp (number or string of numbers)
       if (!isNaN(dateInput)) {
         const date = new Date(Number(dateInput));
         if (!isNaN(date.getTime())) return date.toLocaleString();
       }
 
-      // Case 4: Java LocalDateTime array format [YYYY, MM, DD, HH, MM]
       if (Array.isArray(dateInput)) {
         const [year, month, day, hour = 0, minute = 0] = dateInput;
         const date = new Date(year, month - 1, day, hour, minute);
@@ -55,7 +48,6 @@ const AdminPage = () => {
     }
   };
 
-  // Helper function to parse "YYYY-MM-DD HH:mm:ss" or "YYYY-MM-DDTHH:mm:ss" as local time
   const parseLocalDateTime = (str) => {
     if (!str) return null;
     let s = str.replace("T", " ");
@@ -69,7 +61,6 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        // Check if user is admin
         const userRes = await fetch("/api/auth/me", { credentials: "include" });
         if (!userRes.ok) {
           navigate("/login");
@@ -82,7 +73,6 @@ const AdminPage = () => {
           return;
         }
 
-        // Fetch users, reservations and reviews
         const [usersRes, reservationsRes, reviewsRes] = await Promise.all([
           fetch("/api/auth/users", { credentials: "include" }),
           fetch("/api/reservations", { credentials: "include" }),
@@ -94,24 +84,21 @@ const AdminPage = () => {
         }
 
         const allUsers = await usersRes.json();
-        // Filter out admin users
         setUsers(allUsers.filter((user) => user.status !== "administrateur"));
 
-        // Process reservations to ensure consistent date field names
         const reservationsData = await reservationsRes.json();
         setReservations(
           reservationsData.map((res) => ({
             ...res,
-            appointment_date: res.appointment_date || res.appointmentDate, // Handle both field names
+            appointment_date: res.appointment_date || res.appointmentDate,
           }))
         );
 
-        // Process reviews to ensure consistent date field names
         const reviewsData = await reviewsRes.json();
         setReviews(
           reviewsData.map((rev) => ({
             ...rev,
-            created_at: rev.created_at || rev.createdAt, // Handle both field names
+            created_at: rev.created_at || rev.createdAt,
           }))
         );
 

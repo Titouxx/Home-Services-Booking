@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
-import Footer from "./Footer";
 import "../styles/BasketPage.css";
 
-// Helper to parse 'YYYY-MM-DD HH:mm:ss' or 'YYYY-MM-DDTHH:mm:ss' as local time
 function parseLocalDateTime(str) {
   if (!str) return null;
   let s = str.replace("T", " ");
   const [datePart, timePart] = s.split(" ");
-  if (!datePart || !timePart) return new Date(str); // fallback
+  if (!datePart || !timePart) return new Date(str);
   const [year, month, day] = datePart.split("-").map(Number);
   const [hour, minute, second] = timePart.split(":").map(Number);
   return new Date(year, month - 1, day, hour, minute, second);
@@ -108,7 +106,6 @@ export function BasketPage() {
       : "";
   };
 
-  // Group reservations by service/subservice name
   const groupedReservations = reservations.reduce((acc, item) => {
     const name = item.customName || item.service?.name || "Other";
     if (!acc[name]) acc[name] = [];

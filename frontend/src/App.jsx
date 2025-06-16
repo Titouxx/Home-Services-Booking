@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HomePage } from "./components/HomePage.jsx";
 import ServiceDetailsPage from "./components/ServiceDetailsPage";
@@ -20,13 +19,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Pages publiques */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/about" element={<AboutPage />} />
-
-        {/* Pages protégées (nécessitent authentification) */}
         <Route
           path="/"
           element={
@@ -75,8 +71,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* Routes de messagerie */}
         <Route
           path="/messages/:otherUserId"
           element={
@@ -93,7 +87,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/provider/:providerId/reviews"
           element={
@@ -102,7 +95,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/about"
           element={

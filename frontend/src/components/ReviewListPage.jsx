@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
-import Header from "./Header";
 import "../styles/ReviewList.css";
 
 const ReviewListPage = () => {
@@ -23,10 +22,9 @@ const ReviewListPage = () => {
         return res.json();
       })
       .then((data) => {
-        // Ensure each provider has a services array
         const providersWithServices = data.map((provider) => ({
           ...provider,
-          services: provider.services || [], // Default to empty array if undefined
+          services: provider.services || [],
         }));
         setProviders(providersWithServices);
         setError(null);

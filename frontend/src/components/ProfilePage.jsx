@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import "../styles/Profile.css";
 import Layout from "./Layout";
@@ -78,7 +78,6 @@ export default function ProfilePage() {
       <div className="profile-container">
         <h2>My Profile</h2>
 
-        {/* New info line */}
         {!editing && (
           <p className="profile-intro">
             Your username is <strong>{user.username}</strong> and your status is{" "}

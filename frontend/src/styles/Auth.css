@@ -1,78 +1,69 @@
 .auth-container {
-    max-width: 400px;
-    margin: 3rem auto;
-    padding: 2rem;
-    background: #f7fbea;
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #f7fbea;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-/* Titre */
 .auth-title {
-    font-family: Georgia, serif;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    color: #4B6000;
+  font-family: Georgia, serif;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #4b6000;
 }
 
-/* Le formulaire */
 .auth-form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Inputs et select */
 .auth-input,
 .auth-select {
-    padding: 0.8rem 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    font-family: inherit;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
-/* Bouton principal */
 .auth-button {
-    padding: 0.8rem 1rem;
-    background: #4B6000;
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 0.5rem;
+  padding: 0.8rem 1rem;
+  background: #4b6000;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
 }
 
-/* Lien pour basculer login ↔ register */
 .auth-switch {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 .auth-link {
-    color: #4B6000;
-    cursor: pointer;
-    text-decoration: underline;
+  color: #4b6000;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-/* lien Terms en bas du formulaire */
 .auth-terms {
-    margin-top: 1.5rem;
-    font-size: 0.85rem;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
 }
 .auth-terms a {
-    color: #4B6000;
-    text-decoration: underline;
+  color: #4b6000;
+  text-decoration: underline;
 }
 
-
-/* src/styles/Auth.css */
 .auth-page header nav {
-    display: none !important;
+  display: none !important;
 }
 
-/* (optionnel) pour centrer le logo quand il n’y a plus de nav) */
 .auth-page header {
-    justify-content: center !important;
+  justify-content: center !important;
 }

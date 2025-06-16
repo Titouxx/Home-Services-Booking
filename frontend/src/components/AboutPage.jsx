@@ -1,6 +1,4 @@
-import React from "react";
 import Layout from "./Layout";
-import Footer from "./Footer";
 import "../styles/AboutPage.css";
 
 const AboutPage = () => {

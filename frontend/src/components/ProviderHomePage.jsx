@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/ProviderHomePage.css";
 import Layout from "./Layout";
-import Footer from "./Footer";
-import { useNavigate } from "react-router-dom";
 
 const AVAILABLE_HOURS = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
 
@@ -14,7 +12,7 @@ export function ProviderHomePage() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [timeSlots, setTimeSlots] = useState([]);
-  const [loadingServices, setLoadingServices] = useState(true);
+  const [, setLoadingServices] = useState(true);
   const [selectedServiceNames, setSelectedServiceNames] = useState([]);
   const [selectedServiceForAvailability, setSelectedServiceForAvailability] =
     useState("");
@@ -23,7 +21,6 @@ export function ProviderHomePage() {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const providerId = user?.id;
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user || !providerId) {
@@ -54,16 +51,14 @@ export function ProviderHomePage() {
         setSelectedServices(names);
       })
       .catch(() => {});
-  }, []);
+  }, [providerId, user]);
 
-  // Service selection logic
   const handleServiceChange = (name) => {
     setSelectedServices((prev) =>
       prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name]
     );
   };
 
-  // Subservice selection logic
   const handleSubServiceChange = (name) => {
     setSelectedServices((prev) =>
       prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name]
@@ -106,7 +101,6 @@ export function ProviderHomePage() {
       return;
     }
 
-    // Combine date and time
     const date = new Date(selectedDate);
     const [hour, minute] = selectedTime.split(":");
     date.setHours(parseInt(hour, 10), parseInt(minute, 10), 0, 0);
@@ -138,7 +132,7 @@ export function ProviderHomePage() {
         .then(setTimeSlots)
         .catch(() => {});
       alert(`Time slot added for ${date.toLocaleString()} (${serviceName})`);
-      setSelectedTime(""); // Reset after adding
+      setSelectedTime("");
     } catch (err) {
       alert("❌ Error: " + err.message);
     }

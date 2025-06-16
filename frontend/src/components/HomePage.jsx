@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import MyCalendar from "./Calendar";
-import Footer from "./Footer";
 import Layout from "./Layout";
 import "../styles/HomePage.css";
 
@@ -18,10 +17,8 @@ export function HomePage() {
     const saved = localStorage.getItem("basketItems");
     return saved ? JSON.parse(saved) : [];
   });
-  const [loading, setLoading] = useState(true);
 
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/api/services")
@@ -189,7 +186,6 @@ export function HomePage() {
           </div>
           <hr />
 
-          {/* Render results */}
           {searchQuery && searchMode === "services" ? (
             <>
               {matchingServices.map((service) => (

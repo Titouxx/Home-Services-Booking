@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 
@@ -14,7 +14,6 @@ const MyAppointments = () => {
         setLoading(true);
         setError(null);
 
-        // First get current user info to determine role
         const userResponse = await fetch("http://localhost:8080/api/auth/me", {
           credentials: "include",
         });

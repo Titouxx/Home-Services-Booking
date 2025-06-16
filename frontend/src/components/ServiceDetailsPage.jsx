@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MyCalendar from "./Calendar";
-import Header from "./Header";
-import Footer from "./Footer";
 import "../styles/ServiceDetailsPage.css";
 import Layout from "./Layout";
 

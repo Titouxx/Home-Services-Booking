@@ -1,22 +1,17 @@
 // src/components/MessagingPage.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import Header from "./Header";
+import { useParams, useNavigate } from "react-router-dom";
 import "../styles/Messaging.css";
 import Layout from "./Layout";
-import Footer from "./Footer";
 
 export default function MessagingPage() {
   const { otherUserId } = useParams();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const providerId = searchParams.get("providerId");
   const [me, setMe] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [socket, setSocket] = useState(null);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [conversations, setConversations] = useState([]);
   const messagesEndRef = useRef(null);
@@ -29,7 +24,6 @@ export default function MessagingPage() {
     scrollToBottom();
   }, [messages]);
 
-  // Récupérer la liste des conversations
   useEffect(() => {
     if (!me) return;
 
@@ -55,7 +49,6 @@ export default function MessagingPage() {
       });
   }, [me]);
 
-  // Récupérer les messages d'une conversation
   useEffect(() => {
     if (!me || !otherUserId) return;
 
@@ -88,7 +81,6 @@ export default function MessagingPage() {
       .finally(() => setLoading(false));
   }, [me, otherUserId, navigate]);
 
-  // 1) récupère "me" depuis /api/auth/me
   useEffect(() => {
     setLoading(true);
     fetch("/api/auth/me", {
@@ -134,7 +126,6 @@ export default function MessagingPage() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  // Add this useEffect hook to your component
   useEffect(() => {
     if (!otherUserId) return;
 

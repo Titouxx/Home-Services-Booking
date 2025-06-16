@@ -1,5 +1,3 @@
-import React from "react";
-import { Link } from "react-router-dom";
 import "../styles/TermsPage.css";
 import Layout from "./Layout";
 

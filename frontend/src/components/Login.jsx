@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "./Header";
 import "../styles/Auth.css";
@@ -33,7 +33,6 @@ export default function Login() {
         body: JSON.stringify({ username, password }),
       });
       if (resp.ok) {
-        // Récupère l'utilisateur connecté et stocke-le
         const meResp = await fetch("/api/auth/me", { credentials: "include" });
         if (meResp.ok) {
           const user = await meResp.json();
@@ -85,7 +84,6 @@ export default function Login() {
             Register
           </span>
         </p>
-        {/* --- nouveau lien Terms en bas --- */}
         <p className="auth-terms">
           <Link to="/terms">Terms of Service</Link>
         </p>
