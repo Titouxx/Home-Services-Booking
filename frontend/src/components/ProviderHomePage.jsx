@@ -51,7 +51,8 @@ export function ProviderHomePage() {
         setSelectedServices(names);
       })
       .catch(() => {});
-  }, [providerId, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleServiceChange = (name) => {
     setSelectedServices((prev) =>
