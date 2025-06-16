@@ -1,5 +1,3 @@
--- Migration V5: provider_services and provider_availability
-
 CREATE TABLE provider_services (
                                    id SERIAL PRIMARY KEY,
                                    provider_id INTEGER NOT NULL,

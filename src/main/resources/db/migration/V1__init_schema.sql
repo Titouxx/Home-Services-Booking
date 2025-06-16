@@ -1,4 +1,3 @@
--- Create the services table
 CREATE TABLE services (
                           id SERIAL PRIMARY KEY,
                           name VARCHAR(100) NOT NULL,
@@ -7,7 +6,6 @@ CREATE TABLE services (
                           description VARCHAR(500) NOT NULL
 );
 
--- Insert initial services
 INSERT INTO services (name, price, duration_minutes, description) VALUES
                                                          ('House cleaning', 5.99, 60, 'Complete cleaning service: deep cleaning, vacuuming, mopping, dusting and tidying up. Eco-friendly products used. Weekly or one-time packages available.'),
                                                          ('Plumber', 5.99, 60, 'Full plumbing service including leak repairs, sanitary installations and emergency repairs. Our certified plumbers intervene within 24 hours.'),
