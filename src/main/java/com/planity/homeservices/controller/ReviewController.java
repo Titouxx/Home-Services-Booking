@@ -50,4 +50,27 @@ public class ReviewController {
             req.getComment()
         ));
     }
+
+    @GetMapping
+    public ResponseEntity<List<Review>> getAllReviews() {
+        return ResponseEntity.ok(reviewService.getAllReviews());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long id, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
+        }
+        if (!"administrateur".equals(user.getStatus())) {
+            return ResponseEntity.status(403).body(Map.of("error", "Only admins can delete reviews"));
+        }
+        
+        try {
+            reviewService.deleteReview(id);
+            return ResponseEntity.ok().body("Review deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

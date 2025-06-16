@@ -76,7 +76,7 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<?> getAllReservations() {
         try {
-            List<Reservation> reservations = reservationRepository.findAll();
+            List<Reservation> reservations = reservationRepository.findAllWithDetails();
             return ResponseEntity.ok(reservations);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

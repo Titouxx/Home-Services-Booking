@@ -36,4 +36,12 @@ public class ReviewService {
         review.setCreatedAt(LocalDateTime.now());
         return reviewRepository.save(review);
     }
+
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
+    }
+
+    public void deleteReview(Long id) {
+        reviewRepository.deleteById(id);
+    }
 }

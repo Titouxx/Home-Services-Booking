@@ -37,4 +37,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT DISTINCT s.name FROM Reservation r JOIN r.service s " +
            "WHERE r.user.id = :userId AND r.providerId = :providerId")
     List<String> findServiceNamesByUserIdAndProviderId(@Param("userId") Long userId, @Param("providerId") Long providerId);
+
+       @Query("SELECT r FROM Reservation r LEFT JOIN FETCH r.user LEFT JOIN FETCH r.service")
+       List<Reservation> findAllWithDetails();
 }
